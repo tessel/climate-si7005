@@ -1,4 +1,5 @@
 var tm = process.binding('tm');
+var Tessel = require('tm');
 
 var 
     REG_STATUS = 0x00,
@@ -38,11 +39,10 @@ var
 var ADDRESS = 0x40,
     DATAh = 0x01, // Relative Humidity or Temperature, High Byte
     DATAl = 0x02, // Relative Humidity or Temperature, Low Byte
-    MAX = 1984,
-    MIN = 384,
-    RANGE = (MAX-MIN)/100,
-    _cs = null,
-    _port = null
+    cs = null,
+    port = null,
+    LOW = 0,
+    HIGH = 1
     ;
 
 function read_registers (addressToRead, bytesToRead)
@@ -63,7 +63,8 @@ function write_register (addressToWrite, dataToWrite)
 
 // pulls the cs line high or low
 function csn(mode){
-  _csn.set(mode);
+  console.log("cs ", cs);
+  cs.set(mode);
 }
 
 // reads the data registers
@@ -71,7 +72,7 @@ function get_data(configValue){
   // pull the cs line low
   csn(LOW);
   // zzz until the chip wakes up
-  board.sleep(15); 
+  tm.sleep_ms(WAKE_UP_TIME); 
   write_register(REG_CONFIG, CONFIG_START | configValue | _config_reg);
 
   var status = STATUS_NOT_READY;
@@ -126,22 +127,22 @@ function set_fast_measure(status){
   }
 }
 
-function initialize (port, next)
+function initialize (p, next)
 {
   tm.i2c_initialize(tm.I2C_1);
   tm.i2c_master_enable(tm.I2C_1);
   console.log("Starting up S17005...");
+  port = Tessel.port(p);
 
+  cs = port.gpio(1);
+  cs.setMode(OUTPUT);
   csn(LOW);
-  board.sleep( WAKE_UP_TIME );
+  tm.sleep_ms( WAKE_UP_TIME );
   var id = read_register(REG_ID);
-
   if (id != ADDRESS) {
-    throw "Cannot connect to S17005";
+    throw "Cannot connect to S17005. Got id: " + id;
   }
   console.log("Connected to S17005");
-  _port = Tessel.port(port);
-  _csn = _port.gpio(1);
 }
 
 exports.initialize = initialize;
