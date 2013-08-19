@@ -1,5 +1,5 @@
 var tm = process.binding('tm');
-var Tessel = require('tm');
+var Tessel = require('tessel');
 
 var 
     REG_STATUS = 0x00,
@@ -63,7 +63,7 @@ function write_register (addressToWrite, dataToWrite)
 
 // pulls the cs line high or low
 function csn(mode){
-  console.log("cs ", cs);
+  // console.log("cs ", cs);
   cs.set(mode);
 }
 
@@ -73,7 +73,7 @@ function get_data(configValue){
   csn(LOW);
   // zzz until the chip wakes up
   tm.sleep_ms(WAKE_UP_TIME); 
-  write_register(REG_CONFIG, CONFIG_START | configValue | _config_reg);
+  write_register(REG_CONFIG, CONFIG_START | configValue | 0);
 
   var status = STATUS_NOT_READY;
   while ( status & STATUS_NOT_READY )
@@ -135,12 +135,12 @@ function initialize (p, next)
   port = Tessel.port(p);
 
   cs = port.gpio(1);
-  cs.setMode(OUTPUT);
+  cs.output();
   csn(LOW);
   tm.sleep_ms( WAKE_UP_TIME );
-  var id = read_register(REG_ID);
-  if (id != ADDRESS) {
-    throw "Cannot connect to S17005. Got id: " + id;
+  var id = read_register(REG_ID) & ID_SAMPLE;
+  if (id != ID_SI7005) {
+    throw "Cannot connect to S17005. Got id: " + id.toString(16);
   }
   console.log("Connected to S17005");
 }

@@ -2,8 +2,7 @@ var temphum = require('../');
 
 temphum.initialize('A');
 
-while(true) {
+setInterval(function () {
   var temp = temphum.get_temp();
-  console.log(temphum);
   console.log("temp ", temp);
-}
+}, 100);
