@@ -89,7 +89,7 @@ function get_data(configValue){
 
   csn(HIGH);
 
-  return datal + datah << 8;
+  return datal | datah << 8;
 }
 
 // returns % humidity
@@ -109,6 +109,11 @@ function get_temp(x) {
 
 
   return _last_temperature;
+}
+
+// returns temp in degrees celcius
+function get_temp_fahrenheit(){
+  return get_temp()*9/5 + 32;
 }
 
 function set_heater(status){
@@ -149,4 +154,6 @@ exports.initialize = initialize;
 exports.set_heater = set_heater;
 exports.set_fast_measure = set_fast_measure;
 exports.get_temp = get_temp;
+exports.get_temp_fahrenheit = get_temp_fahrenheit;
 exports.get_humidity = get_humidity;
+
