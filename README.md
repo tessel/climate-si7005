@@ -30,13 +30,13 @@ Returns the humidity level.
 
 ###.set_heater(ENABLE | DISABLE)
 
-Sets the HEAT config register. According to section 5.1.4 of the datasheet
+Sets the HEAT config register. According to section 5.1.4 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
 
 > Turning on the heater will reduce the tendency of the humidity sensor to accumulate an offset due to “memory” of sustained high humidity conditions. When the heater is enabled, the reading of the on-chip temperature sensor will be affected (increased).
 
 ###.set_fast_measure(ENABLE | DISABLE)
 
-Sets the FAST config register. According to section 5.1.3 of the datasheet
+Sets the FAST config register. According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
 
 > Fast mode reduces the total power consumed during a conversion or the average power consumed by the Si7005 when making periodic conversions. It also reduces the resolution of the measurements.
 
