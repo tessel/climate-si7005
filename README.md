@@ -1,5 +1,5 @@
 #Temp-humid-s17005
-A port of [@jjalling's](https://github.com/jjalling) Si7005-B-GM Arduino library to JS
+A port of [@jjalling's Si7005-B-GM Arduino library](https://github.com/jjalling/Arduino-Si7005) to JS
 
 ##Example
 ```js
@@ -38,11 +38,12 @@ Sets the FAST config register. According to section 5.1.3 of the datasheet
 
 > Fast mode reduces the total power consumed during a conversion or the average power consumed by the Si7005 when making periodic conversions. It also reduces the resolution of the measurements.
 
-| | Normal|	Fast |
-|-|-------|------|
-|converstion time	| 35ms	| 18ms |
-|temp resolution	| 14 bit | 13 bit |
-|humidity resolution	| 12 bit | 11 bit |
+ | Normal | Fast
+--- | --- | ---
+converstion time | 35ms | 18ms
+temp resolution | 14 bit | 13 bit
+humidity resolution | 12 bit | 11 bit
+
 
 ##References
 * [Arduino-Si7005](https://github.com/jjalling/Arduino-Si7005)
