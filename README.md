@@ -1,5 +1,7 @@
 #Temp-humid-s17005
-A port of [@jjalling's Si7005-B-GM Arduino library](https://github.com/jjalling/Arduino-Si7005) to JS
+A port of [@jjalling's Si7005-B-GM Arduino library](https://github.com/jjalling/Arduino-Si7005) to JS.
+
+Uses the [Si7005](http://www.digikey.com/product-detail/en/SI7005-B-FM/336-2330-5-ND/3586861) chip as the Temp/Humid sensor.
 
 ##Example
 ```js
