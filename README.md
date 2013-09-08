@@ -3,7 +3,7 @@ A port of [@jjalling's Si7005-B-GM Arduino library](https://github.com/jjalling/
 
 ##Example
 ```js
-var temphum = require('temp-humid-s17005);
+var temphum = require('temp-humid-s17005');
 temphum.initialize('A'); // pick out the port bank
 console.log(temphum.get_temp());
 ```
