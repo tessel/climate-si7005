@@ -26,13 +26,13 @@ Returns the temperature in degrees Fahrenheit.
 
 Returns the humidity level.
 
-###.set_heater(ENABLE|DISABLE)
+###.set_heater(ENABLE | DISABLE)
 
 Sets the HEAT config register. According to section 5.1.4 of the datasheet
 
 > Turning on the heater will reduce the tendency of the humidity sensor to accumulate an offset due to “memory” of sustained high humidity conditions. When the heater is enabled, the reading of the on-chip temperature sensor will be affected (increased).
 
-###.set_fast_measure(ENABLE|DISABLE)
+###.set_fast_measure(ENABLE | DISABLE)
 
 Sets the FAST config register. According to section 5.1.3 of the datasheet
 
