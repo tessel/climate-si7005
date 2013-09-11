@@ -2,10 +2,8 @@ var firmata = require('firmata')
   , hardware = require('hardware');
 
 var board = new firmata.Board('/dev/tty.usbmodem1421', function () {
-  hardware.firmata(board);
-
   console.log("Starting up S17005...");
-  var climate = require('../').connect('arduino', 2);
+  var climate = require('../').connect(hardware.firmata(board), 2);
 
   climate.on('connected', function () {
     console.log("Connected to S17005");

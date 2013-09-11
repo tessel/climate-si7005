@@ -1,5 +1,3 @@
-var hardware = require('hardware');
-
 var events = require('events');
 var util = require('util');
 
@@ -38,24 +36,24 @@ var
   ;
 
 // used http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf as a reference
-var ADDRESS = 0x40,
+var I2C_ADDRESS = 0x40,
   DATAh = 0x01, // Relative Humidity or Temperature, High Byte
   DATAl = 0x02, // Relative Humidity or Temperature, Low Byte
   cs = null,
-  port = null,
-  LOW = 0,
-  HIGH = 1
+  port = null
   ;
 
 
-function ClimateSensor (interface, csn) {
+function ClimateSensor (hardware, csn) {
+  this.hardware = hardware;
   this.csn = csn;
 
-  this.i2c = new hardware.I2C(interface || 0, ADDRESS);
+  // I2C object for address
+  this.i2c = new this.hardware.I2C(I2C_ADDRESS);
   this.i2c.initialize();
   
-  hardware.pinOutput(this.csn);
-  hardware.digitalWrite(this.csn, 0);
+  this.hardware.pinOutput(this.csn);
+  this.hardware.digitalWrite(this.csn, 0);
 
   var self = this;
   setTimeout(function () {
@@ -72,6 +70,7 @@ function ClimateSensor (interface, csn) {
 
 util.inherits(ClimateSensor, events.EventEmitter)
 
+
 ClimateSensor.prototype._readRegister = function (addressToRead, next)
 {
   this.i2c.transfer([addressToRead], 1, function (err, ret) {
@@ -79,17 +78,19 @@ ClimateSensor.prototype._readRegister = function (addressToRead, next)
   });
 }
 
+
 // Write a single byte to the register.
 ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next)
 {
   this.i2c.send([addressToWrite, dataToWrite], next);
 }
 
+
 // reads the data registers
 ClimateSensor.prototype.getData = function (configValue, next)
 {
   // pull the cs line low
-  hardware.digitalWrite(this.csn, 0);
+  this.hardware.digitalWrite(this.csn, 0);
 
   // zzz until the chip wakes up
   var self = this;
@@ -106,7 +107,7 @@ ClimateSensor.prototype.getData = function (configValue, next)
             self._readRegister(DATAh, function (err, datah) {
               self._readRegister(DATAl, function (err, datal) {
 
-                hardware.digitalWrite(self.csn, 1);
+                self.hardware.digitalWrite(self.csn, 1);
                 next(null, datal | datah << 8)
               });
             });
@@ -115,26 +116,8 @@ ClimateSensor.prototype.getData = function (configValue, next)
       })
     });
   }, WAKE_UP_TIME);
-  // tm.sleep_ms(); 
-  // write_register(REG_CONFIG, CONFIG_START | configValue | 0);
 }
 
-//   var status = STATUS_NOT_READY;
-//   while ( status & STATUS_NOT_READY )
-//   {
-//     // write_register( REG_STATUS, 0 );
-//     status = read_register(REG_STATUS );
-//   }
-
-//   write_register(REG_DATA, 0);
-
-//   var datah = read_register(DATAh);
-//   var datal = read_register(DATAl);
-
-//   csn(HIGH);
-
-//   return datal | datah << 8;
-// }
 
 // returns % humidity
 ClimateSensor.prototype.readHumidity = function (next)
@@ -150,7 +133,8 @@ ClimateSensor.prototype.readHumidity = function (next)
   })
 }
 
-// returns temp in degrees celcius
+
+// returns temp in degrees celcius or fahrenheit
 ClimateSensor.prototype.readTemperature = function (type, next)
 {
   next = next || type;
@@ -170,7 +154,8 @@ ClimateSensor.prototype.readTemperature = function (type, next)
   });
 }
 
-ClimateSensor.prototype.setHeader = function (status)
+
+ClimateSensor.prototype.setHeater = function (status)
 {
   if (status) {
     _config_reg |= CONFIG_HEAT;
@@ -178,6 +163,7 @@ ClimateSensor.prototype.setHeader = function (status)
     _config_reg ^= CONFIG_HEAT;
   }
 }
+
 
 ClimateSensor.prototype.setFastMeasure = function  (status)
 {

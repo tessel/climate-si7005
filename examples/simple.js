@@ -1,7 +1,7 @@
 var hardware = require('hardware');
 
 console.log("Starting up S17005...");
-var climate = require('../').connect(null, 2);
+var climate = require('../').connect(hardware);
 
 climate.on('connected', function () {
   console.log("Connected to S17005");
