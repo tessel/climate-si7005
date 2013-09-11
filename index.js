@@ -180,6 +180,6 @@ ClimateSensor.prototype.setFastMeasure = function  (status)
  */
 
 exports.ClimateSensor = ClimateSensor;
-exports.connect = function (interface, csn) {
-  return new ClimateSensor(interface, csn);
+exports.connect = function (hardware, csn) {
+  return new ClimateSensor(hardware, csn);
 }
