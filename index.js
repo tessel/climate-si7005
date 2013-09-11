@@ -40,13 +40,11 @@ var
   q1   = 0.00237,
 
   WAKE_UP_TIME  = 15
-  ;
 
-var I2C_ADDRESS = 0x40,
+/* Constants */
+  I2C_ADDRESS = 0x40,
   DATAh = 0x01, // Relative Humidity or Temperature, High Byte
   DATAl = 0x02, // Relative Humidity or Temperature, Low Byte
-  cs = null,
-  port = null
   ;
 
 
@@ -57,6 +55,7 @@ var I2C_ADDRESS = 0x40,
 function ClimateSensor (hardware, csn) {
   this.hardware = hardware;
   this.csn = csn;
+  this._config_reg = 0;
 
   // I2C object for address
   this.i2c = new this.hardware.I2C(I2C_ADDRESS);
@@ -105,7 +104,7 @@ ClimateSensor.prototype.getData = function (configValue, next)
   // zzz until the chip wakes up
   var self = this;
   setTimeout(function () {
-    self._writeRegister(REG_CONFIG, CONFIG_START | configValue | 0, function () {
+    self._writeRegister(REG_CONFIG, CONFIG_START | configValue | this._config_reg, function () {
       setImmediate(function untilready () {
         self._readRegister(REG_STATUS, function (err, status) {
           if (status & STATUS_NOT_READY) {
@@ -169,9 +168,9 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next)
 ClimateSensor.prototype.setHeater = function (status)
 {
   if (status) {
-    _config_reg |= CONFIG_HEAT;
+    this._config_reg |= CONFIG_HEAT;
   } else {
-    _config_reg ^= CONFIG_HEAT;
+    this._config_reg ^= CONFIG_HEAT;
   }
 }
 
@@ -180,9 +179,9 @@ ClimateSensor.prototype.setHeater = function (status)
 ClimateSensor.prototype.setFastMeasure = function  (status)
 {
   if (status) {
-    _config_reg |= CONFIG_FAST;
+    this._config_reg |= CONFIG_FAST;
   } else {
-    _config_reg ^= CONFIG_FAST;
+    this._config_reg ^= CONFIG_FAST;
   }
 }
 

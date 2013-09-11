@@ -6,6 +6,9 @@ var climate = require('../').connect(hardware.firmata('/dev/tty.usbmodem1411'), 
 climate.on('connected', function () {
   console.log("Connected to S17005");
 
+  // Better humidity readings.
+  climate.setHeater(true);
+
   // Loop forever
   setImmediate(function loop () {
     climate.readTemperature('f', function (err, temp) {
