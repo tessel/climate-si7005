@@ -1,6 +1,13 @@
 var events = require('events');
 var util = require('util');
 
+
+/**
+ * Configuration
+ */
+
+// Datasheet: http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf
+
 var 
   REG_STATUS = 0x00,
   REG_DATA = 0x01,
@@ -35,7 +42,6 @@ var
   WAKE_UP_TIME  = 15
   ;
 
-// used http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf as a reference
 var I2C_ADDRESS = 0x40,
   DATAh = 0x01, // Relative Humidity or Temperature, High Byte
   DATAl = 0x02, // Relative Humidity or Temperature, Low Byte
@@ -43,6 +49,10 @@ var I2C_ADDRESS = 0x40,
   port = null
   ;
 
+
+/**
+ * ClimateSensor
+ */
 
 function ClimateSensor (hardware, csn) {
   this.hardware = hardware;
@@ -70,7 +80,7 @@ function ClimateSensor (hardware, csn) {
 
 util.inherits(ClimateSensor, events.EventEmitter)
 
-
+// Read I2C device register.
 ClimateSensor.prototype._readRegister = function (addressToRead, next)
 {
   this.i2c.transfer([addressToRead], 1, function (err, ret) {
@@ -79,14 +89,14 @@ ClimateSensor.prototype._readRegister = function (addressToRead, next)
 }
 
 
-// Write a single byte to the register.
+// Write to I2C device regsiter.
 ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next)
 {
   this.i2c.send([addressToWrite, dataToWrite], next);
 }
 
 
-// reads the data registers
+// Reads data from a sensor. Prompt for configuration, then poll until ready.
 ClimateSensor.prototype.getData = function (configValue, next)
 {
   // pull the cs line low
@@ -119,7 +129,7 @@ ClimateSensor.prototype.getData = function (configValue, next)
 }
 
 
-// returns % humidity
+// Returns % humidity.
 ClimateSensor.prototype.readHumidity = function (next)
 {
   var self = this;
@@ -134,8 +144,8 @@ ClimateSensor.prototype.readHumidity = function (next)
 }
 
 
-// returns temp in degrees celcius or fahrenheit
-ClimateSensor.prototype.readTemperature = function (type, next)
+// Returns temp in degrees celcius or fahrenheit (type == 'f')
+ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next)
 {
   next = next || type;
 
@@ -155,6 +165,7 @@ ClimateSensor.prototype.readTemperature = function (type, next)
 }
 
 
+// Set the "heater" config to reduce heating memory.
 ClimateSensor.prototype.setHeater = function (status)
 {
   if (status) {
@@ -165,6 +176,7 @@ ClimateSensor.prototype.setHeater = function (status)
 }
 
 
+// Draw lower power on successive polling.
 ClimateSensor.prototype.setFastMeasure = function  (status)
 {
   if (status) {
@@ -179,6 +191,7 @@ ClimateSensor.prototype.setFastMeasure = function  (status)
  * Module API
  */
 
+// .connect() function or direct constructor
 exports.ClimateSensor = ClimateSensor;
 exports.connect = function (hardware, csn) {
   return new ClimateSensor(hardware, csn);
