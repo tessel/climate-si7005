@@ -6,7 +6,7 @@ Uses the [Si7005](http://www.digikey.com/product-detail/en/SI7005-B-FM/336-2330-
 ##Example
 
 ```js
-var climate = require('climate-s17005').connect();
+var climate = require('climate-s17005').connect(hardwareapi);
 climate.on('connected', function () {
   climate.readTemperature('f', function (err, temp) {
     console.log('Degrees:', temp.toFixed(4) + 'F');
