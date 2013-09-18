@@ -39,13 +39,13 @@ var
   q0   = 0.1973,
   q1   = 0.00237,
 
-  WAKE_UP_TIME  = 15
+  WAKE_UP_TIME  = 15,
 
 /* Constants */
   I2C_ADDRESS = 0x40,
   DATAh = 0x01, // Relative Humidity or Temperature, High Byte
-  DATAl = 0x02, // Relative Humidity or Temperature, Low Byte
-  ;
+  DATAl = 0x02; // Relative Humidity or Temperature, Low Byte
+  
 
 
 /**
@@ -104,7 +104,7 @@ ClimateSensor.prototype.getData = function (configValue, next)
   // zzz until the chip wakes up
   var self = this;
   setTimeout(function () {
-    self._writeRegister(REG_CONFIG, CONFIG_START | configValue | this._config_reg, function () {
+    self._writeRegister(REG_CONFIG, CONFIG_START | configValue | self._config_reg, function () {
       setImmediate(function untilready () {
         self._readRegister(REG_STATUS, function (err, status) {
           if (status & STATUS_NOT_READY) {

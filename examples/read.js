@@ -7,7 +7,7 @@ climate.on('connected', function () {
   console.log("Connected to S17005");
 
   // Better humidity readings.
-  climate.setHeater(true);
+  // climate.setHeater(true);
 
   // Loop forever
   setImmediate(function loop () {
