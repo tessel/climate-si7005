@@ -1,7 +1,8 @@
-var hardware = require('hardware');
+// var hardware = require('hardware');
+var tessel = require('tessel');
 
 console.log("Starting up S17005...");
-var climate = require('../').connect(hardware.firmata('/dev/tty.usbmodem1411'), 2);
+var climate = require('../').connect(tessel.port('A'));
 
 climate.on('connected', function () {
   console.log("Connected to S17005");
