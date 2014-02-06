@@ -3,10 +3,6 @@ Driver for the climate-s17005 Tessel climate module ([SI7005](http://www.silabs.
 
 A port of [@jjalling's Si7005-B-GM Arduino library](https://github.com/jjalling/Arduino-Si7005) to JS.
 
-##Really Important Information
-e.g. "this isn't ready to go yet" or "here is some special way you have to use this or it won't work"
-Hopefully we don't need this section by the time we release things to the public
-
 ##Installation
 ```sh
 npm install relay-im48dgr
