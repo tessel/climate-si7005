@@ -77,7 +77,7 @@ function ClimateSensor (hardware, csn) {
   }, WAKE_UP_TIME);
 }
 
-util.inherits(ClimateSensor, events.EventEmitter)
+util.inherits(ClimateSensor, events.EventEmitter);
 
 // Read I2C device register.
 ClimateSensor.prototype._readRegister = function (addressToRead, next)
@@ -120,9 +120,9 @@ ClimateSensor.prototype.getData = function (configValue, next)
                 next(null, datal | datah << 8)
               });
             });
-          })
-        })
-      })
+          });
+        });
+      });
     });
   }, WAKE_UP_TIME);
 }
