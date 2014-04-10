@@ -69,7 +69,7 @@ function ClimateSensor (hardware, csn) {
     self._readRegister(REG_ID, function ok (err, reg) {
       var id = reg & ID_SAMPLE;
       if (id != ID_SI7005) {
-        throw "Cannot connect to S17005. Got id: " + id.toString(16);
+        throw "Cannot connect to Si7005. Got id: " + id.toString(16);
       }
 
       self.emit('connected');
