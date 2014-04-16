@@ -45,14 +45,21 @@ var
   I2C_ADDRESS = 0x40,
   DATAh = 0x01, // Relative Humidity or Temperature, High Byte
   DATAl = 0x02; // Relative Humidity or Temperature, Low Byte
-  
-
 
 /**
  * ClimateSensor
  */
 
 function ClimateSensor (hardware, csn) {
+  /**
+  Constructor
+
+  Args
+    hardware
+      Tessel port to use
+    csn
+      Chip select pin to use (active low). Wired to GPIO 1 on the module.
+  */
   this.hardware = hardware;
   this.csn = csn || 1;
   this._config_reg = 0;
@@ -78,27 +85,50 @@ function ClimateSensor (hardware, csn) {
 
 util.inherits(ClimateSensor, events.EventEmitter);
 
-// Read I2C device register.
 ClimateSensor.prototype._readRegister = function (addressToRead, next) {
+  /**
+  Read from registers on the PCA9685 via I2C
+
+  Args
+    addressToRead
+      Register to read
+    next
+      Callback; gets reply byte as its arg
+  */
   this.i2c.transfer(new Buffer([addressToRead]), 1, function (err, ret) {
-    next(err, ret && ret[0]);
+    next && next(err, ret && ret[0]);
   });
 }
 
-
-// Write to I2C device regsiter.
 ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next) {
+  /**
+  Write to registers on the PCA9685 via I2C
+
+  Args
+    addressToWrite
+      Register to read
+    dataToWrite
+      Bytes to send
+    next
+      Callback
+  */
   this.i2c.send(new Buffer([addressToWrite, dataToWrite]), next);
 }
 
-
-// Reads data from a sensor. Prompt for configuration, then poll until ready.
 ClimateSensor.prototype.getData = function (configValue, next) {
-  // pull the cs line low
+  /**
+  Get data from the sensor. Effectively a wrapper function.
+
+  Args
+    configValue
+      Value corresponding to what data is being requested
+    next
+      Callback; gets err, data as args
+  */
+  //  Pull the cs line low
   this.hardware.gpio(this.csn).writeSync(0);
 
-
-  // zzz until the chip wakes up
+  //  Wait until the chip wakes up
   var self = this;
   setTimeout(function () {
     self._writeRegister(REG_CONFIG, CONFIG_START | configValue | self._config_reg, function () {
@@ -114,7 +144,7 @@ ClimateSensor.prototype.getData = function (configValue, next) {
               self._readRegister(DATAl, function (err, datal) {
 
                 self.hardware.digitalWrite(self.csn, 1);
-                next(null, datal | datah << 8)
+                next(null, datal | datah << 8);
               });
             });
           });
@@ -124,9 +154,14 @@ ClimateSensor.prototype.getData = function (configValue, next) {
   }, WAKE_UP_TIME);
 }
 
-
-// Returns % humidity.
 ClimateSensor.prototype.readHumidity = function (next) {
+  /**
+  Read and return the relative humidity
+
+  Args
+    next
+      Callback; gets err, relHumidity as args
+  */
   var self = this;
   this.getData(CONFIG_HUMIDITY, function (err, reg) {
     var rawHumidity = reg >> 4;
@@ -134,13 +169,20 @@ ClimateSensor.prototype.readHumidity = function (next) {
     var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
     var linearHumidity = linearHumidity + ( self._last_temperature - 30 ) * ( linearHumidity * q1 + q0 );
 
-    next(null, linearHumidity);
-  })
+    next && next(null, linearHumidity);
+  });
 }
 
-
-// Returns temp in degrees celcius or fahrenheit (type == 'f')
 ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
+  /**
+  Read and return the temperature. Celcius by default, Farenheit if type === 'f'
+  
+  Args
+    type
+      if type === 'f', use Farenheit
+    next
+      Callback; gets err, temperature as args
+  */
   next = next || type;
 
   var self = this;
@@ -150,7 +192,7 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
     var temp = ( rawTemperature / TEMPERATURE_SLOPE ) - TEMPERATURE_OFFSET;
     self._last_temperature = temp;
 
-    if (type == 'f') {
+    if (type === 'f') {
       temp = temp * (9/5) + 32;
     }
 
@@ -158,9 +200,18 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
   });
 }
 
-
-// Set the "heater" config to reduce heating memory.
 ClimateSensor.prototype.setHeater = function (status) {
+  /**
+  Turn the chip's internal heater on or off. Enabling the heater will drive
+  condensation off of the sensor, thereby reducing its hysteresis and allowing
+  for more accurate humidity measurements in high humidity conditions.
+  
+  Note that this will interfere with (raise) temperature mesurement.
+
+  Args
+    status
+      true = heater on, false = heater off
+  */
   if (status) {
     this._config_reg |= CONFIG_HEAT;
   } else {
@@ -168,9 +219,15 @@ ClimateSensor.prototype.setHeater = function (status) {
   }
 }
 
-
-// Draw lower power on successive polling.
 ClimateSensor.prototype.setFastMeasure = function  (status) {
+  /**
+  Draw less power on successive polling at the cost of resolution.
+  Note that this module already uses very little power.
+
+  Args
+    status
+      true = fast mode, false = normal mode
+  */
   if (status) {
     this._config_reg |= CONFIG_FAST;
   } else {
