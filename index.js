@@ -54,15 +54,14 @@ var
 
 function ClimateSensor (hardware, csn) {
   this.hardware = hardware;
-  this.csn = csn;
+  this.csn = csn || 1;
   this._config_reg = 0;
 
   // I2C object for address
   this.i2c = new this.hardware.I2C(I2C_ADDRESS);
   this.i2c.initialize();
   
-  this.hardware.pinOutput(this.csn);
-  this.hardware.digitalWrite(this.csn, 0);
+  this.hardware.gpio(this.csn).writeSync(0);
 
   var self = this;
   setTimeout(function () {
@@ -80,26 +79,24 @@ function ClimateSensor (hardware, csn) {
 util.inherits(ClimateSensor, events.EventEmitter);
 
 // Read I2C device register.
-ClimateSensor.prototype._readRegister = function (addressToRead, next)
-{
-  this.i2c.transfer([addressToRead], 1, function (err, ret) {
+ClimateSensor.prototype._readRegister = function (addressToRead, next) {
+  this.i2c.transfer(new Buffer([addressToRead]), 1, function (err, ret) {
     next(err, ret && ret[0]);
   });
 }
 
 
 // Write to I2C device regsiter.
-ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next)
-{
-  this.i2c.send([addressToWrite, dataToWrite], next);
+ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next) {
+  this.i2c.send(new Buffer([addressToWrite, dataToWrite]), next);
 }
 
 
 // Reads data from a sensor. Prompt for configuration, then poll until ready.
-ClimateSensor.prototype.getData = function (configValue, next)
-{
+ClimateSensor.prototype.getData = function (configValue, next) {
   // pull the cs line low
-  this.hardware.digitalWrite(this.csn, 0);
+  this.hardware.gpio(this.csn).writeSync(0);
+
 
   // zzz until the chip wakes up
   var self = this;
@@ -129,8 +126,7 @@ ClimateSensor.prototype.getData = function (configValue, next)
 
 
 // Returns % humidity.
-ClimateSensor.prototype.readHumidity = function (next)
-{
+ClimateSensor.prototype.readHumidity = function (next) {
   var self = this;
   this.getData(CONFIG_HUMIDITY, function (err, reg) {
     var rawHumidity = reg >> 4;
@@ -144,8 +140,7 @@ ClimateSensor.prototype.readHumidity = function (next)
 
 
 // Returns temp in degrees celcius or fahrenheit (type == 'f')
-ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next)
-{
+ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
   next = next || type;
 
   var self = this;
@@ -165,8 +160,7 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next)
 
 
 // Set the "heater" config to reduce heating memory.
-ClimateSensor.prototype.setHeater = function (status)
-{
+ClimateSensor.prototype.setHeater = function (status) {
   if (status) {
     this._config_reg |= CONFIG_HEAT;
   } else {
@@ -176,8 +170,7 @@ ClimateSensor.prototype.setHeater = function (status)
 
 
 // Draw lower power on successive polling.
-ClimateSensor.prototype.setFastMeasure = function  (status)
-{
+ClimateSensor.prototype.setFastMeasure = function  (status) {
   if (status) {
     this._config_reg |= CONFIG_FAST;
   } else {
