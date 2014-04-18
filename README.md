@@ -1,15 +1,21 @@
 #Climate
-Driver for the climate-s17005 Tessel climate module ([SI7005](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)).
+Driver for the climate-si7005 Tessel climate module ([Si7005](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)).
 
 A port of [@jjalling's Si7005-B-GM Arduino library](https://github.com/jjalling/Arduino-Si7005) to JS.
 
+## Hardware overview/setup
+
+The module may come with a protective white cover over the sensor, as shown in the image below. This cover should be removed before use. Once the protective cover has been removed, avoid touching, poking, or dirtying the exposed silicon die.
+
+![Climate module with protective cover still in place](./protective-cover.jpg)
+
 ##Installation
 ```sh
-npm install relay-im48dgr
+npm install climate-si7005
 ```
 ##Example
 ```js
-var climate = require('climate-s17005').connect(hardwareapi);
+var climate = require('climate-si7005').connect(hardwareapi);
 climate.on('connected', function () {
   climate.readTemperature('f', function (err, temp) {
     console.log('Degrees:', temp.toFixed(4) + 'F');
@@ -19,18 +25,21 @@ climate.on('connected', function () {
 
 ##Methods
 
-*  **`relay`.connect(interface[, csn])**
-Takes in the port bank that the module is connected to. Returns the Temp/Humid object.
+*  **`climate`.connect(interface[, csn])**
+Takes in the port bank that the module is connected to. Returns the Climate object.
 
-*  **`relay`.readTemperature([format,] callback(err, temp))**
+*  **`climate`.readTemperature([format,] callback(err, temp))**
 Returns the temperature in degrees Celcius or Fahrenheit.
 
-*  **`relay`.readHumidity(callback(err, humidity))** Returns the humidity level.
+*  **`climate`.readHumidity(callback(err, humidity))** Returns the relative humidity.
 
-*  **`relay`.setHeater(bool[, callback(err)])** Sets the HEAT config register. According to section 5.1.4 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
+*  **`climate`.setHeater(bool[, callback(err)])** Sets the HEAT config register. 
+The heater evaporates off any moisture that may condense on the sensor in high humidty environments. Enabling the heater will inreases the accuracy of humidity measurements but will interfere with temperature measurement.
+According to section 5.1.4 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
 > Turning on the heater will reduce the tendency of the humidity sensor to accumulate an offset due to “memory” of sustained high humidity conditions. When the heater is enabled, the reading of the on-chip temperature sensor will be affected (increased).
 
-*  **`relay`.setFastMeasure(bool[, callback(err)])** Sets the FAST config register. According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
+
+*  **`climate`.setFastMeasure(bool[, callback(err)])** Sets the FAST config register. According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
 > Fast mode reduces the total power consumed during a conversion or the average power consumed by the Si7005 when making periodic conversions. It also reduces the resolution of the measurements.
 
  | Normal | Fast
