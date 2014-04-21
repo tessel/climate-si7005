@@ -5,7 +5,7 @@ A port of [@jjalling's Si7005-B-GM Arduino library](https://github.com/jjalling/
 
 ## Hardware overview/setup
 
-The module may come with a protective white cover over the sensor, as shown in the image below. This cover should be removed before use. Once the protective cover has been removed, avoid touching, poking, or dirtying the exposed silicon die.
+The module may come with a protective white cover over the sensor, as shown in the image below. This cover is permeable and does *not* need to be removed before use. If the protective cover is removed, avoid touching, poking, or dirtying the exposed silicon die.
 
 ![Climate module with protective cover still in place](./protective-cover.jpg)
 
