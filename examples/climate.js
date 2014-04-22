@@ -1,11 +1,15 @@
-// var hardware = require('hardware');
+/*********************************************
+This basic climate example logs a stream
+of temperature and humidity to the console.
+*********************************************/
+
 var tessel = require('tessel');
 
-console.log("Starting up Si7005... on port bank A");
-var climate = require('climate-s17005').connect(tessel.port('A'));
+console.log("Starting up si7005... on port bank A");
+var climate = require('../').connect(tessel.port('A'));
 
 climate.on('connected', function () {
-  console.log("Connected to Si7005");
+  console.log("Connected to si7005");
 
   // Better humidity readings.
   // climate.setHeater(true);
