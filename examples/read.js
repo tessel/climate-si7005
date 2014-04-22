@@ -2,7 +2,7 @@
 var tessel = require('tessel');
 
 console.log("Starting up Si7005... on port bank A");
-var climate = require('../').connect(tessel.port('A'));
+var climate = require('climate-s17005').connect(tessel.port('A'));
 
 climate.on('connected', function () {
   console.log("Connected to Si7005");
