@@ -65,20 +65,21 @@ function ClimateSensor (hardware, csn) {
   this._config_reg = 0;
 
   // I2C object for address
-  this.i2c = new this.hardware.I2C(I2C_ADDRESS);
-  this.i2c.initialize();
+  this.i2c = this.hardware.I2C(I2C_ADDRESS);
   
-  this.hardware.gpio(this.csn).writeSync(0);
+  this.hardware.gpio(this.csn).write(0);
 
   var self = this;
+
   setTimeout(function () {
     self._readRegister(REG_ID, function ok (err, reg) {
       var id = reg & ID_SAMPLE;
       if (id != ID_SI7005) {
-        throw "Cannot connect to Si7005. Got id: " + id.toString(16);
+        self.emit('error', new Error("Cannot connect to Si7005. Got id: " + id.toString(16)));
       }
-
-      self.emit('connected');
+      else {
+        self.emit('ready');
+      }
     });
   }, WAKE_UP_TIME);
 }
@@ -240,8 +241,8 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
  * Module API
  */
 
-// .connect() function or direct constructor
 exports.ClimateSensor = ClimateSensor;
-exports.connect = function (hardware, csn) {
+
+exports.use = function (hardware, csn) {
   return new ClimateSensor(hardware, csn);
 }

@@ -6,13 +6,10 @@ of temperature and humidity to the console.
 var tessel = require('tessel');
 
 console.log("Starting up si7005... on port bank A");
-var climate = require('../').connect(tessel.port('A'));
+var climate = require('../').use(tessel.port('A'));
 
-climate.on('connected', function () {
+climate.on('ready', function () {
   console.log("Connected to si7005");
-
-  // Better humidity readings.
-  // climate.setHeater(true);
 
   // Loop forever
   setImmediate(function loop () {
@@ -24,3 +21,8 @@ climate.on('connected', function () {
     });
   });
 });
+
+climate.on('error', function(err) {
+  console.log('error connecting module', err);
+})
+setInterval(function(){}, 20000);

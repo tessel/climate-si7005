@@ -15,8 +15,8 @@ npm install climate-si7005
 ```
 ##Example
 ```js
-var climate = require('climate-si7005').connect(hardwareapi);
-climate.on('connected', function () {
+var climate = require('climate-si7005').use(hardwareapi);
+climate.on('ready', function () {
   climate.readTemperature('f', function (err, temp) {
     console.log('Degrees:', temp.toFixed(4) + 'F');
   });
