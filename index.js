@@ -8,7 +8,7 @@ var util = require('util');
 
 // Datasheet: http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf
 
-var 
+var
   REG_STATUS = 0x00,
   REG_DATA = 0x01,
   REG_CONFIG = 0x03,
@@ -66,7 +66,7 @@ function ClimateSensor (hardware, csn) {
 
   // I2C object for address
   this.i2c = this.hardware.I2C(I2C_ADDRESS);
-  
+
   this.hardware.gpio(this.csn).write(0);
 
   var self = this;
@@ -97,9 +97,11 @@ ClimateSensor.prototype._readRegister = function (addressToRead, next) {
       Callback; gets reply byte as its arg
   */
   this.i2c.transfer(new Buffer([addressToRead]), 1, function (err, ret) {
-    next && next(err, ret && ret[0]);
+    if (next) {
+      next(err, ret && ret[0]);
+    }
   });
-}
+};
 
 ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next) {
   /**
@@ -114,7 +116,7 @@ ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, 
       Callback
   */
   this.i2c.send(new Buffer([addressToWrite, dataToWrite]), next);
-}
+};
 
 ClimateSensor.prototype.getData = function (configValue, next) {
   /**
@@ -153,7 +155,7 @@ ClimateSensor.prototype.getData = function (configValue, next) {
       });
     });
   }, WAKE_UP_TIME);
-}
+};
 
 ClimateSensor.prototype.readHumidity = function (next) {
   /**
@@ -170,14 +172,16 @@ ClimateSensor.prototype.readHumidity = function (next) {
     var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
     var linearHumidity = linearHumidity + ( self._last_temperature - 30 ) * ( linearHumidity * q1 + q0 );
 
-    next && next(null, linearHumidity);
+    if (next) {
+      next(null, linearHumidity);
+    }
   });
-}
+};
 
 ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
   /**
   Read and return the temperature. Celcius by default, Farenheit if type === 'f'
-  
+
   Args
     type
       if type === 'f', use Farenheit
@@ -199,14 +203,14 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
 
     next(null, temp);
   });
-}
+};
 
 ClimateSensor.prototype.setHeater = function (status) {
   /**
   Turn the chip's internal heater on or off. Enabling the heater will drive
   condensation off of the sensor, thereby reducing its hysteresis and allowing
   for more accurate humidity measurements in high humidity conditions.
-  
+
   Note that this will interfere with (raise) temperature mesurement.
 
   Args
@@ -218,7 +222,7 @@ ClimateSensor.prototype.setHeater = function (status) {
   } else {
     this._config_reg ^= CONFIG_HEAT;
   }
-}
+};
 
 ClimateSensor.prototype.setFastMeasure = function  (status) {
   /**
@@ -234,7 +238,7 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
   } else {
     this._config_reg ^= CONFIG_FAST;
   }
-}
+};
 
 
 /**
@@ -245,4 +249,4 @@ exports.ClimateSensor = ClimateSensor;
 
 exports.use = function (hardware, csn) {
   return new ClimateSensor(hardware, csn);
-}
+};
