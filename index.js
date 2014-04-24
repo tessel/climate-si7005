@@ -170,7 +170,7 @@ ClimateSensor.prototype.readHumidity = function (next) {
     var rawHumidity = reg >> 4;
     var curve = ( rawHumidity / HUMIDITY_SLOPE ) - HUMIDITY_OFFSET;
     var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
-    var linearHumidity = linearHumidity + ( self._last_temperature - 30 ) * ( linearHumidity * q1 + q0 );
+    linearHumidity = linearHumidity + ( self._last_temperature - 30 ) * ( linearHumidity * q1 + q0 );
 
     if (next) {
       next(null, linearHumidity);
