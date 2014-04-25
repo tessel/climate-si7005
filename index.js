@@ -62,7 +62,7 @@ function ClimateSensor (hardware, csn) {
   */
   this.hardware = hardware;
   this.csn = csn || 1;
-  this._config_reg = 0;
+  this._configReg = 0;
 
   // I2C object for address
   this.i2c = this.hardware.I2C(I2C_ADDRESS);
@@ -75,7 +75,7 @@ function ClimateSensor (hardware, csn) {
     self._readRegister(REG_ID, function ok (err, reg) {
       var id = reg & ID_SAMPLE;
       if (id != ID_SI7005) {
-        self.emit('error', new Error("Cannot connect to Si7005. Got id: " + id.toString(16)));
+        self.emit('error', new Error('Cannot connect to Si7005. Got id: ' + id.toString(16)));
       }
       else {
         self.emit('ready');
@@ -134,7 +134,7 @@ ClimateSensor.prototype.getData = function (configValue, next) {
   //  Wait until the chip wakes up
   var self = this;
   setTimeout(function () {
-    self._writeRegister(REG_CONFIG, CONFIG_START | configValue | self._config_reg, function () {
+    self._writeRegister(REG_CONFIG, CONFIG_START | configValue | self._configReg, function () {
       setImmediate(function untilready () {
         self._readRegister(REG_STATUS, function (err, status) {
           if (status & STATUS_NOT_READY) {
@@ -170,7 +170,7 @@ ClimateSensor.prototype.readHumidity = function (next) {
     var rawHumidity = reg >> 4;
     var curve = ( rawHumidity / HUMIDITY_SLOPE ) - HUMIDITY_OFFSET;
     var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
-    linearHumidity = linearHumidity + ( self._last_temperature - 30 ) * ( linearHumidity * q1 + q0 );
+    linearHumidity = linearHumidity + ( self._lastTemperature - 30 ) * ( linearHumidity * q1 + q0 );
 
     if (next) {
       next(null, linearHumidity);
@@ -195,7 +195,7 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
     // console.log('Temp regs:', reg);
     var rawTemperature = reg >> 2;
     var temp = ( rawTemperature / TEMPERATURE_SLOPE ) - TEMPERATURE_OFFSET;
-    self._last_temperature = temp;
+    self._lastTemperature = temp;
 
     if (type === 'f') {
       temp = temp * (9/5) + 32;
@@ -218,9 +218,9 @@ ClimateSensor.prototype.setHeater = function (status) {
       true = heater on, false = heater off
   */
   if (status) {
-    this._config_reg |= CONFIG_HEAT;
+    this._configReg |= CONFIG_HEAT;
   } else {
-    this._config_reg ^= CONFIG_HEAT;
+    this._configReg ^= CONFIG_HEAT;
   }
 };
 
@@ -234,9 +234,9 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
       true = fast mode, false = normal mode
   */
   if (status) {
-    this._config_reg |= CONFIG_FAST;
+    this._configReg |= CONFIG_FAST;
   } else {
-    this._config_reg ^= CONFIG_FAST;
+    this._configReg ^= CONFIG_FAST;
   }
 };
 
