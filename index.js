@@ -77,7 +77,7 @@ function ClimateSensor (hardware, csn) {
   }, WAKE_UP_TIME);
 }
 
-util.inherits(ClimateSensor, events.EventEmitter)
+util.inherits(ClimateSensor, events.EventEmitter);
 
 // Read I2C device register.
 ClimateSensor.prototype._readRegister = function (addressToRead, next)
@@ -85,14 +85,14 @@ ClimateSensor.prototype._readRegister = function (addressToRead, next)
   this.i2c.transfer([addressToRead], 1, function (err, ret) {
     next(err, ret && ret[0]);
   });
-}
+};
 
 
 // Write to I2C device regsiter.
 ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next)
 {
   this.i2c.send([addressToWrite, dataToWrite], next);
-}
+};
 
 
 // Reads data from a sensor. Prompt for configuration, then poll until ready.
@@ -117,15 +117,15 @@ ClimateSensor.prototype.getData = function (configValue, next)
               self._readRegister(DATAl, function (err, datal) {
 
                 self.hardware.digitalWrite(self.csn, 1);
-                next(null, datal | datah << 8)
+                next(null, datal | datah << 8);
               });
             });
-          })
-        })
-      })
+          });
+        });
+      });
     });
   }, WAKE_UP_TIME);
-}
+};
 
 
 // Returns % humidity.
@@ -139,8 +139,8 @@ ClimateSensor.prototype.readHumidity = function (next)
     linearHumidity = linearHumidity + ( self._last_temperature - 30 ) * ( linearHumidity * q1 + q0 );
 
     next(null, linearHumidity);
-  })
-}
+  });
+};
 
 
 // Returns temp in degrees celcius or fahrenheit (type == 'f')
@@ -161,7 +161,7 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next)
 
     next(null, temp);
   });
-}
+};
 
 
 // Set the "heater" config to reduce heating memory.
@@ -172,7 +172,7 @@ ClimateSensor.prototype.setHeater = function (status)
   } else {
     this._config_reg ^= CONFIG_HEAT;
   }
-}
+};
 
 
 // Draw lower power on successive polling.
@@ -183,7 +183,7 @@ ClimateSensor.prototype.setFastMeasure = function  (status)
   } else {
     this._config_reg ^= CONFIG_FAST;
   }
-}
+};
 
 
 /**
@@ -194,4 +194,4 @@ ClimateSensor.prototype.setFastMeasure = function  (status)
 exports.ClimateSensor = ClimateSensor;
 exports.connect = function (hardware, csn) {
   return new ClimateSensor(hardware, csn);
-}
+};
