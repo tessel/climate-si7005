@@ -129,7 +129,7 @@ ClimateSensor.prototype.getData = function (configValue, next) {
       Callback; gets err, data as args
   */
   //  Pull the cs line low
-  this.hardware.gpio(this.csn).writeSync(0);
+  this.hardware.gpio(this.csn).write(0);
 
   //  Wait until the chip wakes up
   var self = this;
