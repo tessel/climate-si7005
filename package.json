@@ -1,6 +1,6 @@
 {
   "name": "climate-si7005",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "The library for using the Climate si7005 module for Tessel. Get temperature and humidity.",
   "main": "index.js",
   "readmeFilename:" : "README.md",
@@ -14,6 +14,6 @@
     "./examples": false,
     "./protective-cover.jpg" : false
   },
-  "author": "",
-  "license": "BSD-2-Clause"
+  "author": "team@technical.io",
+  "license": "MIT/Apache 2.0"
 }
