@@ -1,3 +1,12 @@
+// Copyright 2014 Technical Machine, Inc. See the COPYRIGHT
+// file at the top-level directory of this distribution.
+//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
+
 var events = require('events');
 var util = require('util');
 
@@ -129,7 +138,7 @@ ClimateSensor.prototype.getData = function (configValue, next) {
       Callback; gets err, data as args
   */
   //  Pull the cs line low
-  this.hardware.gpio(this.csn).writeSync(0);
+  this.hardware.gpio(this.csn).write(0);
 
   //  Wait until the chip wakes up
   var self = this;
