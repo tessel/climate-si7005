@@ -1,6 +1,6 @@
 {
   "name": "climate-si7005",
-  "version": "0.0.28",
+  "version": "0.1.0",
   "description": "The library for using the Climate si7005 module for Tessel. Get temperature and humidity.",
   "main": "index.js",
   "readmeFilename:" : "README.md",
@@ -8,11 +8,17 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./testsuite.js"
+  },
+  "dependencies": {
   },
   "hardware": {
-    "./examples": false,
-    "./protective-cover.jpg" : false
+    "./examples": false
+  },
+  "devDependencies": {
+    "tape": "~2.3.2",
+    "tap": "git+https://github.com/tcr/node-tap.git#3cb76e",
+    "shelljs": "~0.3.0"
   },
   "author": "team@technical.io",
   "license": "MIT/Apache 2.0"
