@@ -1,4 +1,5 @@
-#Climate
+# Climate
+
 Driver for the climate-si7005 Tessel climate module ([Si7005](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)).
 
 A port of [@jjalling's Si7005-B-GM Arduino library](https://github.com/jjalling/Arduino-Si7005) to JS.
@@ -23,7 +24,7 @@ climate.on('ready', function () {
 });
 ```
 
-##Methods
+## Methods
 
 *  **`climate`.connect(interface[, csn])**
 Takes in the port bank that the module is connected to. Returns the Climate object.
@@ -42,13 +43,14 @@ According to section 5.1.4 of the [datasheet](http://www.silabs.com/Support%20Do
 *  **`climate`.setFastMeasure(bool[, callback(err)])** Sets the FAST config register. According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
 > Fast mode reduces the total power consumed during a conversion or the average power consumed by the Si7005 when making periodic conversions. It also reduces the resolution of the measurements.
 
- | Normal | Fast
+    | Normal | Fast
 --- | --- | ---
 converstion time | 35ms | 18ms
 temp resolution | 14 bit | 13 bit
 humidity resolution | 12 bit | 11 bit
 
-##References
+## References
+
 * [Arduino-Si7005](https://github.com/jjalling/Arduino-Si7005)
 * [Si7005 datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
 
