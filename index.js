@@ -88,42 +88,42 @@ function Climate (hardware, csn) {
 util.inherits(Climate, events.EventEmitter);
 
 // Read from registers on the PCA9685 via I2C
-Climate.prototype._readRegister = function (addressToRead, next) {
+Climate.prototype._readRegister = function (addressToRead, callback) {
   /*
   Args
     addressToRead
       Register to read
-    next
+    callback
       Callback; gets reply byte as its arg
   */
   this.i2c.transfer(new Buffer([addressToRead]), 1, function (err, ret) {
-    if (next) {
-      next(err, ret && ret[0]);
+    if (callback) {
+      callback(err, ret && ret[0]);
     }
   });
 };
 
 // Write to registers on the PCA9685 via I2C
-Climate.prototype._writeRegister = function (addressToWrite, dataToWrite, next) {
+Climate.prototype._writeRegister = function (addressToWrite, dataToWrite, callback) {
   /*
   Args
     addressToWrite
       Register to read
     dataToWrite
       Bytes to send
-    next
+    callback
       Callback
   */
-  this.i2c.send(new Buffer([addressToWrite, dataToWrite]), next);
+  this.i2c.send(new Buffer([addressToWrite, dataToWrite]), callback);
 };
 
 // Get data from the sensor. Effectively a wrapper function.
-Climate.prototype.getData = function (configValue, next) {
+Climate.prototype.getData = function (configValue, callback) {
   /*
   Args
     configValue
       Value corresponding to what data is being requested
-    next
+    callback
       Callback; gets err, data as args
   */
   //  Pull the cs line low
@@ -145,7 +145,7 @@ Climate.prototype.getData = function (configValue, next) {
               self._readRegister(DATAl, function (err, datal) {
 
                 self.hardware.digitalWrite(self.csn, 1);
-                next(null, datal | datah << 8);
+                callback(null, datal | datah << 8);
               });
             });
           });
@@ -156,10 +156,10 @@ Climate.prototype.getData = function (configValue, next) {
 };
 
 // Read and return the relative humidity
-Climate.prototype.readHumidity = function (next) {
+Climate.prototype.readHumidity = function (callback) {
   /*
   Args
-    next
+    callback
       Callback; gets err, relHumidity as args
   */
   var self = this;
@@ -169,22 +169,22 @@ Climate.prototype.readHumidity = function (next) {
     var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
     linearHumidity = linearHumidity + ( self._lastTemperature - 30 ) * ( linearHumidity * q1 + q0 );
 
-    if (next) {
-      next(null, linearHumidity);
+    if (callback) {
+      callback(null, linearHumidity);
     }
   });
 };
 
 // Read and return the temperature. Celcius by default, Farenheit if type === 'f'
-Climate.prototype.readTemperature = function (/*optional*/ type, next) {
+Climate.prototype.readTemperature = function (/*optional*/ type, callback) {
   /*
   Args
     type
       if type === 'f', use Farenheit
-    next
+    callback
       Callback; gets err, temperature as args
   */
-  next = next || type;
+  callback = callback || type;
 
   var self = this;
   this.getData(CONFIG_TEMPERATURE, function (err, reg) {
@@ -197,12 +197,12 @@ Climate.prototype.readTemperature = function (/*optional*/ type, next) {
       temp = temp * (9/5) + 32;
     }
 
-    next(null, temp);
+    callback(null, temp);
   });
 };
 
 // Turn the chip's internal heater on or off (make humidity more accurate, temperature less accurate)
-Climate.prototype.setHeater = function (status) {
+Climate.prototype.setHeater = function (status, callback) {
   /*
   Turn the chip's internal heater on or off. Enabling the heater will drive
   condensation off of the sensor, thereby reducing its hysteresis and allowing
@@ -219,10 +219,14 @@ Climate.prototype.setHeater = function (status) {
   } else {
     this._configReg ^= CONFIG_HEAT;
   }
+
+  if (callback) {
+    callback();
+  }
 };
 
 // Save some power by lowering resolution of results
-Climate.prototype.setFastMeasure = function  (status) {
+Climate.prototype.setFastMeasure = function  (status, callback) {
   /*
   Draw less power on successive polling at the cost of resolution.
   Note that this module already uses very little power.
@@ -235,6 +239,10 @@ Climate.prototype.setFastMeasure = function  (status) {
     this._configReg |= CONFIG_FAST;
   } else {
     this._configReg ^= CONFIG_FAST;
+  }
+
+  if (callback) {
+    callback();
   }
 };
 
