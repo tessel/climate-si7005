@@ -175,12 +175,12 @@ Climate.prototype.readHumidity = function (callback) {
   });
 };
 
-// Read and return the temperature. Celcius by default, Farenheit if type === 'f'
-Climate.prototype.readTemperature = function (/*optional*/ type, callback) {
+// Read and return the temperature. Celsius by default, Fahrenheit if type === 'f'
+Climate.prototype.readTemperature = function (/*optional*/ units, callback) {
   /*
   Args
-    type
-      if type === 'f', use Farenheit
+    units
+      if units === 'f', use Fahrenheit
     callback
       Callback; gets err, temperature as args
   */
@@ -193,7 +193,7 @@ Climate.prototype.readTemperature = function (/*optional*/ type, callback) {
     var temp = ( rawTemperature / TEMPERATURE_SLOPE ) - TEMPERATURE_OFFSET;
     self._lastTemperature = temp;
 
-    if (type === 'f') {
+    if (units.toLowerCase() === 'f') {
       temp = temp * (9/5) + 32;
     }
 
