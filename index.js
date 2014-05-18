@@ -10,11 +10,7 @@
 var events = require('events');
 var util = require('util');
 
-
-/**
- * Configuration
- */
-
+// Configuration
 // Datasheet: http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf
 
 var
@@ -23,21 +19,21 @@ var
   REG_CONFIG = 0x03,
   REG_ID = 0x11,
 
-/* Status Register */
+  // Status register
   STATUS_NOT_READY = 0x01,
 
-/* Config Register */
+  // Config register
   CONFIG_START = 0x01,
   CONFIG_HEAT = 0x02,
   CONFIG_HUMIDITY = 0x00,
   CONFIG_TEMPERATURE = 0x10,
   CONFIG_FAST = 0x20,
 
-/* ID Register */
+  // ID register
   ID_SAMPLE = 0xF0,
   ID_SI7005 = 0x50,
 
-/* Coefficients */
+  // Coefficients
   TEMPERATURE_OFFSET = 50,
   TEMPERATURE_SLOPE = 32,
   HUMIDITY_OFFSET = 24,
@@ -50,19 +46,15 @@ var
 
   WAKE_UP_TIME  = 15,
 
-/* Constants */
+  // Constants
   I2C_ADDRESS = 0x40,
   DATAh = 0x01, // Relative Humidity or Temperature, High Byte
   DATAl = 0x02; // Relative Humidity or Temperature, Low Byte
 
-/**
- * ClimateSensor
- */
 
+// Constructor
 function ClimateSensor (hardware, csn) {
-  /**
-  Constructor
-
+  /*
   Args
     hardware
       Tessel port to use
@@ -95,10 +87,9 @@ function ClimateSensor (hardware, csn) {
 
 util.inherits(ClimateSensor, events.EventEmitter);
 
+// Read from registers on the PCA9685 via I2C
 ClimateSensor.prototype._readRegister = function (addressToRead, next) {
-  /**
-  Read from registers on the PCA9685 via I2C
-
+  /*
   Args
     addressToRead
       Register to read
@@ -112,10 +103,9 @@ ClimateSensor.prototype._readRegister = function (addressToRead, next) {
   });
 };
 
+// Write to registers on the PCA9685 via I2C
 ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next) {
-  /**
-  Write to registers on the PCA9685 via I2C
-
+  /*
   Args
     addressToWrite
       Register to read
@@ -127,10 +117,9 @@ ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, 
   this.i2c.send(new Buffer([addressToWrite, dataToWrite]), next);
 };
 
+// Get data from the sensor. Effectively a wrapper function.
 ClimateSensor.prototype.getData = function (configValue, next) {
-  /**
-  Get data from the sensor. Effectively a wrapper function.
-
+  /*
   Args
     configValue
       Value corresponding to what data is being requested
@@ -166,10 +155,9 @@ ClimateSensor.prototype.getData = function (configValue, next) {
   }, WAKE_UP_TIME);
 };
 
+// Read and return the relative humidity
 ClimateSensor.prototype.readHumidity = function (next) {
-  /**
-  Read and return the relative humidity
-
+  /*
   Args
     next
       Callback; gets err, relHumidity as args
@@ -187,10 +175,9 @@ ClimateSensor.prototype.readHumidity = function (next) {
   });
 };
 
+// Read and return the temperature. Celcius by default, Farenheit if type === 'f'
 ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
-  /**
-  Read and return the temperature. Celcius by default, Farenheit if type === 'f'
-
+  /*
   Args
     type
       if type === 'f', use Farenheit
@@ -214,13 +201,14 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
   });
 };
 
+// Turn the chip's internal heater on or off (make humidity more accurate, temperature less accurate)
 ClimateSensor.prototype.setHeater = function (status) {
-  /**
+  /*
   Turn the chip's internal heater on or off. Enabling the heater will drive
   condensation off of the sensor, thereby reducing its hysteresis and allowing
   for more accurate humidity measurements in high humidity conditions.
 
-  Note that this will interfere with (raise) temperature mesurement.
+  Note that this will interfere with (raise) temperature measurement.
 
   Args
     status
@@ -233,8 +221,9 @@ ClimateSensor.prototype.setHeater = function (status) {
   }
 };
 
+// Save some power by lowering resolution
 ClimateSensor.prototype.setFastMeasure = function  (status) {
-  /**
+  /*
   Draw less power on successive polling at the cost of resolution.
   Note that this module already uses very little power.
 
@@ -248,11 +237,6 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
     this._configReg ^= CONFIG_FAST;
   }
 };
-
-
-/**
- * Module API
- */
 
 exports.ClimateSensor = ClimateSensor;
 
