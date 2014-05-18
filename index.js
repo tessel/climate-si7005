@@ -76,7 +76,7 @@ function Climate (hardware, csn) {
     self._readRegister(REG_ID, function ok (err, reg) {
       var id = reg & ID_SAMPLE;
       if (id != ID_SI7005) {
-        self.emit('error', new Error('Cannot connect to Si7005. Got id: ' + id.toString(16)));
+        self.emit('error', new Error('Cannot connect to climate sensor. Got id: ' + id.toString(16)));
       }
       else {
         self.emit('ready');
@@ -208,6 +208,9 @@ Climate.prototype.setHeater = function (status, callback) {
   condensation off of the sensor, thereby reducing its hysteresis and allowing
   for more accurate humidity measurements in high humidity conditions.
 
+  According to section 5.1.4 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
+  > Turning on the heater will reduce the tendency of the humidity sensor to accumulate an offset due to “memory” of sustained high humidity conditions. When the heater is enabled, the reading of the on-chip temperature sensor will be affected (increased).
+
   Note that this will interfere with (raise) temperature measurement.
 
   Args
@@ -230,6 +233,15 @@ Climate.prototype.setFastMeasure = function  (status, callback) {
   /*
   Draw less power on successive polling at the cost of resolution.
   Note that this module already uses very little power.
+
+  Sets the FAST config register. According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
+  > Fast mode reduces the total power consumed during a conversion or the average power consumed by the Si7005 when making periodic conversions. It also reduces the resolution of the measurements.
+
+      | Normal | Fast
+  --- | --- | ---
+  converstion time | 35ms | 18ms
+  temp resolution | 14 bit | 13 bit
+  humidity resolution | 12 bit | 11 bit
 
   Args
     status
