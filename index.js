@@ -238,8 +238,9 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
   }
 };
 
-exports.ClimateSensor = ClimateSensor;
-
-exports.use = function (hardware, csn) {
+function use (hardware, csn) {
   return new ClimateSensor(hardware, csn);
-};
+}
+
+exports.ClimateSensor = ClimateSensor;
+exports.use = use;
