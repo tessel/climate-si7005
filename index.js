@@ -221,7 +221,7 @@ Climate.prototype.setHeater = function (status) {
   }
 };
 
-// Save some power by lowering resolution
+// Save some power by lowering resolution of results
 Climate.prototype.setFastMeasure = function  (status) {
   /*
   Draw less power on successive polling at the cost of resolution.

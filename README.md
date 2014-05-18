@@ -42,6 +42,8 @@ setInterval(function(){}, 20000);
 
 ## Methods
 
+##### * `climate.getData(configVal, callback)`
+
 * **`climate`.connect(interface[, csn])**
 Takes in the port bank that the module is connected to. Returns the Climate object.
 
