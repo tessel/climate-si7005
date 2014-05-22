@@ -76,7 +76,7 @@ function ClimateSensor (hardware, csn) {
   // I2C object for address
   this.i2c = this.hardware.I2C(I2C_ADDRESS);
 
-  this.hardware.gpio(this.csn).write(0);
+  this.hardware.digital[this.csn].write(0);
 
   var self = this;
 
@@ -138,7 +138,7 @@ ClimateSensor.prototype.getData = function (configValue, next) {
       Callback; gets err, data as args
   */
   //  Pull the cs line low
-  this.hardware.gpio(this.csn).write(0);
+  this.hardware.digital[this.csn].write(0);
 
   //  Wait until the chip wakes up
   var self = this;
