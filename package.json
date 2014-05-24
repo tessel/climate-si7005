@@ -3,23 +3,20 @@
   "version": "0.1.0",
   "description": "The library for using the Climate si7005 module for Tessel. Get temperature and humidity.",
   "main": "index.js",
-  "readmeFilename:" : "README.md",
+  "readmeFilename:": "README.md",
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "./testsuite.js"
+    "test": "tinytap -e 'tessel run {} ${CLIMATE_PORT}' test/*.js"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "hardware": {
     "./examples": false
   },
-  "devDependencies": {
-    "tape": "~2.3.2",
-    "tap": "git+https://github.com/tcr/node-tap.git#3cb76e",
-    "shelljs": "~0.3.0"
-  },
   "author": "team@technical.io",
-  "license": "MIT/Apache 2.0"
+  "license": "MIT/Apache 2.0",
+  "devDependencies": {
+    "tinytap": "~0.0.2"
+  }
 }
