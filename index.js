@@ -10,11 +10,7 @@
 var events = require('events');
 var util = require('util');
 
-
-/**
- * Configuration
- */
-
+// Configuration
 // Datasheet: http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf
 
 var
@@ -23,21 +19,21 @@ var
   REG_CONFIG = 0x03,
   REG_ID = 0x11,
 
-/* Status Register */
+  // Status register
   STATUS_NOT_READY = 0x01,
 
-/* Config Register */
+  // Config register
   CONFIG_START = 0x01,
   CONFIG_HEAT = 0x02,
   CONFIG_HUMIDITY = 0x00,
   CONFIG_TEMPERATURE = 0x10,
   CONFIG_FAST = 0x20,
 
-/* ID Register */
+  // ID register
   ID_SAMPLE = 0xF0,
   ID_SI7005 = 0x50,
 
-/* Coefficients */
+  // Coefficients
   TEMPERATURE_OFFSET = 50,
   TEMPERATURE_SLOPE = 32,
   HUMIDITY_OFFSET = 24,
@@ -50,27 +46,16 @@ var
 
   WAKE_UP_TIME  = 15,
 
-/* Constants */
+  // Constants
   I2C_ADDRESS = 0x40,
   DATAh = 0x01, // Relative Humidity or Temperature, High Byte
   DATAl = 0x02; // Relative Humidity or Temperature, Low Byte
 
-/**
- * ClimateSensor
- */
 
-function ClimateSensor (hardware, csn) {
-  /**
-  Constructor
-
-  Args
-    hardware
-      Tessel port to use
-    csn
-      Chip select pin to use (active low). Wired to GPIO 1 on the module.
-  */
+// Constructor
+function Climate (hardware) {
   this.hardware = hardware;
-  this.csn = csn || 1;
+  this.csn = 1;
   this._configReg = 0;
 
   // I2C object for address
@@ -84,7 +69,7 @@ function ClimateSensor (hardware, csn) {
     self._readRegister(REG_ID, function ok (err, reg) {
       var id = reg & ID_SAMPLE;
       if (id != ID_SI7005) {
-        self.emit('error', new Error('Cannot connect to Si7005. Got id: ' + id.toString(16)));
+        self.emit('error', new Error('Cannot connect to climate sensor. Got id: ' + id.toString(16)));
       }
       else {
         self.emit('ready');
@@ -93,48 +78,45 @@ function ClimateSensor (hardware, csn) {
   }, WAKE_UP_TIME);
 }
 
-util.inherits(ClimateSensor, events.EventEmitter);
+util.inherits(Climate, events.EventEmitter);
 
-ClimateSensor.prototype._readRegister = function (addressToRead, next) {
-  /**
-  Read from registers on the PCA9685 via I2C
-
+// Read from registers on the PCA9685 via I2C
+Climate.prototype._readRegister = function (addressToRead, callback) {
+  /*
   Args
     addressToRead
       Register to read
-    next
+    callback
       Callback; gets reply byte as its arg
   */
   this.i2c.transfer(new Buffer([addressToRead]), 1, function (err, ret) {
-    if (next) {
-      next(err, ret && ret[0]);
+    if (callback) {
+      callback(err, ret && ret[0]);
     }
   });
 };
 
-ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next) {
-  /**
-  Write to registers on the PCA9685 via I2C
-
+// Write to registers on the PCA9685 via I2C
+Climate.prototype._writeRegister = function (addressToWrite, dataToWrite, callback) {
+  /*
   Args
     addressToWrite
       Register to read
     dataToWrite
       Bytes to send
-    next
+    callback
       Callback
   */
-  this.i2c.send(new Buffer([addressToWrite, dataToWrite]), next);
+  this.i2c.send(new Buffer([addressToWrite, dataToWrite]), callback);
 };
 
-ClimateSensor.prototype.getData = function (configValue, next) {
-  /**
-  Get data from the sensor. Effectively a wrapper function.
-
+// Get data from the sensor. Effectively a wrapper function.
+Climate.prototype.getData = function (configValue, callback) {
+  /*
   Args
     configValue
       Value corresponding to what data is being requested
-    next
+    callback
       Callback; gets err, data as args
   */
   //  Pull the cs line low
@@ -156,7 +138,7 @@ ClimateSensor.prototype.getData = function (configValue, next) {
               self._readRegister(DATAl, function (err, datal) {
 
                 self.hardware.digitalWrite(self.csn, 1);
-                next(null, datal | datah << 8);
+                callback(null, datal | datah << 8);
               });
             });
           });
@@ -166,12 +148,11 @@ ClimateSensor.prototype.getData = function (configValue, next) {
   }, WAKE_UP_TIME);
 };
 
-ClimateSensor.prototype.readHumidity = function (next) {
-  /**
-  Read and return the relative humidity
-
+// Read and return the relative humidity
+Climate.prototype.readHumidity = function (callback) {
+  /*
   Args
-    next
+    callback
       Callback; gets err, relHumidity as args
   */
   var self = this;
@@ -181,23 +162,22 @@ ClimateSensor.prototype.readHumidity = function (next) {
     var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
     linearHumidity = linearHumidity + ( self._lastTemperature - 30 ) * ( linearHumidity * q1 + q0 );
 
-    if (next) {
-      next(null, linearHumidity);
+    if (callback) {
+      callback(null, linearHumidity);
     }
   });
 };
 
-ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
-  /**
-  Read and return the temperature. Celcius by default, Farenheit if type === 'f'
-
+// Read and return the temperature. Celsius by default, Fahrenheit if type === 'f'
+Climate.prototype.readTemperature = function (/*optional*/ units, callback) {
+  /*
   Args
-    type
-      if type === 'f', use Farenheit
-    next
+    units
+      if units === 'f', use Fahrenheit
+    callback
       Callback; gets err, temperature as args
   */
-  next = next || type;
+  callback = callback || type;
 
   var self = this;
   this.getData(CONFIG_TEMPERATURE, function (err, reg) {
@@ -206,21 +186,25 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
     var temp = ( rawTemperature / TEMPERATURE_SLOPE ) - TEMPERATURE_OFFSET;
     self._lastTemperature = temp;
 
-    if (type === 'f') {
+    if (units.toLowerCase() === 'f') {
       temp = temp * (9/5) + 32;
     }
 
-    next(null, temp);
+    callback(null, temp);
   });
 };
 
-ClimateSensor.prototype.setHeater = function (status) {
-  /**
+// Turn the chip's internal heater on or off (make humidity more accurate, temperature less accurate)
+Climate.prototype.setHeater = function (status, callback) {
+  /*
   Turn the chip's internal heater on or off. Enabling the heater will drive
   condensation off of the sensor, thereby reducing its hysteresis and allowing
   for more accurate humidity measurements in high humidity conditions.
 
-  Note that this will interfere with (raise) temperature mesurement.
+  According to section 5.1.4 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
+  > Turning on the heater will reduce the tendency of the humidity sensor to accumulate an offset due to “memory” of sustained high humidity conditions. When the heater is enabled, the reading of the on-chip temperature sensor will be affected (increased).
+
+  Note that this will interfere with (raise) temperature measurement.
 
   Args
     status
@@ -231,12 +215,26 @@ ClimateSensor.prototype.setHeater = function (status) {
   } else {
     this._configReg ^= CONFIG_HEAT;
   }
+
+  if (callback) {
+    callback();
+  }
 };
 
-ClimateSensor.prototype.setFastMeasure = function  (status) {
-  /**
+// Save some power by lowering resolution of results
+Climate.prototype.setFastMeasure = function  (status, callback) {
+  /*
   Draw less power on successive polling at the cost of resolution.
   Note that this module already uses very little power.
+
+  Sets the FAST config register. According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
+  > Fast mode reduces the total power consumed during a conversion or the average power consumed by the Si7005 when making periodic conversions. It also reduces the resolution of the measurements.
+
+      | Normal | Fast
+  --- | --- | ---
+  converstion time | 35ms | 18ms
+  temp resolution | 14 bit | 13 bit
+  humidity resolution | 12 bit | 11 bit
 
   Args
     status
@@ -247,15 +245,15 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
   } else {
     this._configReg ^= CONFIG_FAST;
   }
+
+  if (callback) {
+    callback();
+  }
 };
 
+function use (hardware, csn) {
+  return new Climate(hardware, csn);
+}
 
-/**
- * Module API
- */
-
-exports.ClimateSensor = ClimateSensor;
-
-exports.use = function (hardware, csn) {
-  return new ClimateSensor(hardware, csn);
-};
+exports.Climate = Climate;
+exports.use = use;
