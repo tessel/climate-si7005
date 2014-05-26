@@ -13,17 +13,22 @@ var climate = require('../').use(tessel.port['A']); // Replace '../' with 'clima
 climate.on('ready', function () {
   // Loop forever
   setImmediate(function loop () {
+    // Get temperature in Fahrenheit
     climate.readTemperature('f', function (err, temp) {
+      // Get humidity in % relative humidity (http://en.wikipedia.org/wiki/Relative_humidity)
       climate.readHumidity(function (err, humid) {
+        // Print temperature and humidity to the console
         console.log('Degrees:', temp.toFixed(4) + 'F', 'Humidity:', humid.toFixed(4) + '%RH');
-        setTimeout(loop, 300);
+        setTimeout(loop, 300); // Repeat every 300ms
       });
     });
   });
 });
 
+// If there is an error, log it
 climate.on('error', function(err) {
   console.log('error connecting module', err);
 });
 
+// Keep the process open
 setInterval(function(){}, 20000);
