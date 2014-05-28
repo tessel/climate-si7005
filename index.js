@@ -70,7 +70,7 @@ function ClimateSensor (hardware, csn) {
       Chip select pin to use (active low). Wired to GPIO 1 on the module.
   */
   this.hardware = hardware;
-  this.csn = csn || 1;
+  this.csn = csn || 0;
   this._configReg = 0;
 
   // I2C object for address
