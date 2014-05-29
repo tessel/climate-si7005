@@ -9,6 +9,9 @@
 
 var events = require('events');
 var util = require('util');
+var prom = require('prom');
+
+var onReady = prom(); // An promise event that will be delivered on 'ready' event
 
 
 /**
@@ -88,6 +91,7 @@ function ClimateSensor (hardware, csn) {
       }
       else {
         self.emit('ready');
+        onReady.deliver('delivered request'); // Delviers promise when module is ready 
       }
     });
   }, WAKE_UP_TIME);
@@ -175,7 +179,8 @@ ClimateSensor.prototype.readHumidity = function (next) {
       Callback; gets err, relHumidity as args
   */
   var self = this;
-  this.getData(CONFIG_HUMIDITY, function (err, reg) {
+  onReady(
+  self.getData(CONFIG_HUMIDITY, function (err, reg) {
     var rawHumidity = reg >> 4;
     var curve = ( rawHumidity / HUMIDITY_SLOPE ) - HUMIDITY_OFFSET;
     var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
@@ -184,7 +189,7 @@ ClimateSensor.prototype.readHumidity = function (next) {
     if (next) {
       next(null, linearHumidity);
     }
-  });
+  }));
 };
 
 ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
@@ -197,10 +202,12 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
     next
       Callback; gets err, temperature as args
   */
+
   next = next || type;
 
   var self = this;
-  this.getData(CONFIG_TEMPERATURE, function (err, reg) {
+  onReady(
+  self.getData(CONFIG_TEMPERATURE, function (err, reg) {
     // console.log('Temp regs:', reg);
     var rawTemperature = reg >> 2;
     var temp = ( rawTemperature / TEMPERATURE_SLOPE ) - TEMPERATURE_OFFSET;
@@ -211,7 +218,7 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
     }
 
     next(null, temp);
-  });
+  }));
 };
 
 ClimateSensor.prototype.setHeater = function (status) {
@@ -226,11 +233,13 @@ ClimateSensor.prototype.setHeater = function (status) {
     status
       true = heater on, false = heater off
   */
+  var self = this;
+  onReady(
   if (status) {
-    this._configReg |= CONFIG_HEAT;
+    self._configReg |= CONFIG_HEAT;
   } else {
-    this._configReg ^= CONFIG_HEAT;
-  }
+    self._configReg ^= CONFIG_HEAT;
+  });
 };
 
 ClimateSensor.prototype.setFastMeasure = function  (status) {
@@ -242,11 +251,13 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
     status
       true = fast mode, false = normal mode
   */
+  var self = this;
+  onReady(
   if (status) {
-    this._configReg |= CONFIG_FAST;
+    self._configReg |= CONFIG_FAST;
   } else {
-    this._configReg ^= CONFIG_FAST;
-  }
+    self._configReg ^= CONFIG_FAST;
+  });
 };
 
 

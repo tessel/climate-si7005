@@ -10,7 +10,9 @@
   "scripts": {
     "test": "tinytap -e 'tessel run {} ${CLIMATE_PORT}' test/*.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "prom": "*"
+    },
   "hardware": {
     "./examples": false
   },
