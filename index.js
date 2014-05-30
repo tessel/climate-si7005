@@ -70,7 +70,7 @@ function ClimateSensor (hardware, csn) {
       Chip select pin to use (active low). Wired to GPIO 1 on the module.
   */
 
-  this.onReady = prom(); // An promise event that will be delivered on 'ready' event
+  this.onReady = prom(); // An promise that will be delivered on 'ready' event
 
   this.hardware = hardware;
   this.csn = csn || 0;
@@ -91,7 +91,7 @@ function ClimateSensor (hardware, csn) {
       }
       else {
         self.emit('ready');
-        onReady.deliver('delivered request'); // Delviers promise when module is ready 
+        self.onReady.deliver('delivered request'); // Delviers promise when module is ready 
       }
     });
   }, WAKE_UP_TIME);
