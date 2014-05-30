@@ -9,7 +9,7 @@
 
 var events = require('events');
 var util = require('util');
-
+var prom = require('prom');
 
 /**
  * Configuration
@@ -69,6 +69,9 @@ function ClimateSensor (hardware, csn) {
     csn
       Chip select pin to use (active low). Wired to GPIO 1 on the module.
   */
+
+  this.onReady = prom(); // An promise that will be delivered on 'ready' event
+
   this.hardware = hardware;
   this.csn = csn || 0;
   this._configReg = 0;
@@ -88,6 +91,7 @@ function ClimateSensor (hardware, csn) {
       }
       else {
         self.emit('ready');
+        self.onReady.deliver('delivered request'); // Delviers promise when module is ready 
       }
     });
   }, WAKE_UP_TIME);
@@ -175,15 +179,17 @@ ClimateSensor.prototype.readHumidity = function (next) {
       Callback; gets err, relHumidity as args
   */
   var self = this;
-  this.getData(CONFIG_HUMIDITY, function (err, reg) {
-    var rawHumidity = reg >> 4;
-    var curve = ( rawHumidity / HUMIDITY_SLOPE ) - HUMIDITY_OFFSET;
-    var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
-    linearHumidity = linearHumidity + ( self._lastTemperature - 30 ) * ( linearHumidity * q1 + q0 );
+  self.onReady(function () {
+    self.getData(CONFIG_HUMIDITY, function (err, reg) {
+      var rawHumidity = reg >> 4;
+      var curve = ( rawHumidity / HUMIDITY_SLOPE ) - HUMIDITY_OFFSET;
+      var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
+      linearHumidity = linearHumidity + ( self._lastTemperature - 30 ) * ( linearHumidity * q1 + q0 );
 
-    if (next) {
-      next(null, linearHumidity);
-    }
+      if (next) {
+        next(null, linearHumidity);
+      }
+    })
   });
 };
 
@@ -200,17 +206,19 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
   next = next || type;
 
   var self = this;
-  this.getData(CONFIG_TEMPERATURE, function (err, reg) {
-    // console.log('Temp regs:', reg);
-    var rawTemperature = reg >> 2;
-    var temp = ( rawTemperature / TEMPERATURE_SLOPE ) - TEMPERATURE_OFFSET;
-    self._lastTemperature = temp;
+  self.onReady( function () {
+    self.getData(CONFIG_TEMPERATURE, function (err, reg) {
+      // console.log('Temp regs:', reg);
+      var rawTemperature = reg >> 2;
+      var temp = ( rawTemperature / TEMPERATURE_SLOPE ) - TEMPERATURE_OFFSET;
+      self._lastTemperature = temp;
 
-    if (type === 'f') {
-      temp = temp * (9/5) + 32;
-    }
+      if (type === 'f') {
+        temp = temp * (9/5) + 32;
+      }
 
-    next(null, temp);
+      next(null, temp);
+    })
   });
 };
 
