@@ -6,7 +6,7 @@ of temperature and humidity to the console.
 var tessel = require('tessel');
 
 console.log('Starting up si7005... on port bank A');
-var climate = require('../').use(tessel.port('A'));
+var climate = require('../').use(tessel.port['A']);
 
 climate.on('ready', function () {
   console.log('Connected to si7005');
@@ -21,6 +21,10 @@ climate.on('ready', function () {
     });
   });
 });
+
+climate.on('temperature', function () {
+  console.log('boop');
+)};
 
 climate.on('error', function(err) {
   console.log('error connecting module', err);

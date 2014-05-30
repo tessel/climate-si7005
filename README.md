@@ -51,6 +51,8 @@ humidity resolution | 12 bit | 11 bit
 
 ## Events
 
+* **`climate.on('ready')` Emitted when upon first successful communication between the Tessel and the module.
+
 * **`climate.on('temperature')` Emitted when temperature data is received. Internal to the `readTeperature` method, useful when another module is triggered by climate data.
 
 * **`climate.on('humidity')` Emitted when humidity data is received. Internal to the `readHumidity` method, useful when another module is triggered by climate data.
