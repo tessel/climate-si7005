@@ -70,7 +70,7 @@ function ClimateSensor (hardware, csn) {
       Chip select pin to use (active low). Wired to GPIO 1 on the module.
   */
 
-  var onReady = prom(); // An promise event that will be delivered on 'ready' event
+  this.onReady = prom(); // An promise event that will be delivered on 'ready' event
 
   this.hardware = hardware;
   this.csn = csn || 0;
@@ -235,9 +235,9 @@ ClimateSensor.prototype.setHeater = function (status) {
       true = heater on, false = heater off
   */
   if (status) {
-    self._configReg |= CONFIG_HEAT;
+    this._configReg |= CONFIG_HEAT;
   } else {
-    self._configReg ^= CONFIG_HEAT;
+    this._configReg ^= CONFIG_HEAT;
   }
 };
 
@@ -251,9 +251,9 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
       true = fast mode, false = normal mode
   */
   if (status) {
-    self._configReg |= CONFIG_FAST;
+    this._configReg |= CONFIG_FAST;
   } else {
-    self._configReg ^= CONFIG_FAST;
+    this._configReg ^= CONFIG_FAST;
   }
 };
 
