@@ -49,6 +49,12 @@ converstion time | 35ms | 18ms
 temp resolution | 14 bit | 13 bit
 humidity resolution | 12 bit | 11 bit
 
+## Events
+
+* **`climate.on('temperature')` Emitted when temperature data is received. Internal to the `readTeperature` method, useful when another module is triggered by climate data.
+
+* **`climate.on('humidity')` Emitted when humidity data is received. Internal to the `readHumidity` method, useful when another module is triggered by climate data.
+
 ## References
 
 * [Arduino-Si7005](https://github.com/jjalling/Arduino-Si7005)
