@@ -11,9 +11,6 @@ var events = require('events');
 var util = require('util');
 var prom = require('prom');
 
-var onReady = prom(); // An promise event that will be delivered on 'ready' event
-
-
 /**
  * Configuration
  */
@@ -72,6 +69,9 @@ function ClimateSensor (hardware, csn) {
     csn
       Chip select pin to use (active low). Wired to GPIO 1 on the module.
   */
+
+  var onReady = prom(); // An promise event that will be delivered on 'ready' event
+
   this.hardware = hardware;
   this.csn = csn || 0;
   this._configReg = 0;
@@ -203,7 +203,6 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
     next
       Callback; gets err, temperature as args
   */
-
   next = next || type;
 
   var self = this;
@@ -235,14 +234,11 @@ ClimateSensor.prototype.setHeater = function (status) {
     status
       true = heater on, false = heater off
   */
-  var self = this;
-  onReady( function () {
-    if (status) {
-      self._configReg |= CONFIG_HEAT;
-    } else {
-      self._configReg ^= CONFIG_HEAT;
-    }
-  });
+  if (status) {
+    self._configReg |= CONFIG_HEAT;
+  } else {
+    self._configReg ^= CONFIG_HEAT;
+  }
 };
 
 ClimateSensor.prototype.setFastMeasure = function  (status) {
@@ -254,14 +250,11 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
     status
       true = fast mode, false = normal mode
   */
-  var self = this;
-  onReady( function () {
-    if (status) {
-      self._configReg |= CONFIG_FAST;
-    } else {
-      self._configReg ^= CONFIG_FAST;
-    }
-  });
+  if (status) {
+    self._configReg |= CONFIG_FAST;
+  } else {
+    self._configReg ^= CONFIG_FAST;
+  }
 };
 
 
