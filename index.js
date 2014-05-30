@@ -179,7 +179,7 @@ ClimateSensor.prototype.readHumidity = function (next) {
       Callback; gets err, relHumidity as args
   */
   var self = this;
-  onReady(function () {
+  self.onReady(function () {
     self.getData(CONFIG_HUMIDITY, function (err, reg) {
       var rawHumidity = reg >> 4;
       var curve = ( rawHumidity / HUMIDITY_SLOPE ) - HUMIDITY_OFFSET;
@@ -206,7 +206,7 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
   next = next || type;
 
   var self = this;
-  onReady( function () {
+  self.onReady( function () {
     self.getData(CONFIG_TEMPERATURE, function (err, reg) {
       // console.log('Temp regs:', reg);
       var rawTemperature = reg >> 2;
