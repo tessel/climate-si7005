@@ -12,8 +12,8 @@ var climatelib = require('../');
 var climate = climatelib.use(tessel.port['A']);
 
 // Emitted once readTemp gets data, allows other functions to listen for climate data
-climate.on('temperature', function () {
-	console.log('temperature data received');
+climate.on('temperature', function (temp) {
+	console.log('Temperature data received: ', temp);
 });
 
 climate.on('ready', function () {
@@ -26,5 +26,5 @@ climate.on('ready', function () {
 climate.on('error', function(err) {
   console.log('error connecting module', err);
 });
-setInterval(function(){}, 20000);
+
 

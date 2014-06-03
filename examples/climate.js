@@ -26,9 +26,9 @@ climate.on('ready', function () {
   });
 });
 
-climate.on('temperature', function () {
-  console.log('boop');
-)};
+climate.on('humidity', function (humid) {
+  console.log(humid); 
+});
 
 climate.on('error', function(err) {
   console.log('error connecting module', err);

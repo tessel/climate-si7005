@@ -186,7 +186,7 @@ ClimateSensor.prototype.readHumidity = function (next) {
       var linearHumidity = curve - ( (curve * curve) * a2 + curve * a1 + a0);
       linearHumidity = linearHumidity + ( self._lastTemperature - 30 ) * ( linearHumidity * q1 + q0 );
 
-      self.emit('humidity');
+      self.emit('humidity', linearHumidity);
       
       if (next) {
         next(null, linearHumidity);
@@ -219,7 +219,7 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
         temp = temp * (9/5) + 32;
       }
 
-      self.emit('temperature');
+      self.emit('temperature', temp);
 
       next(null, temp);
     })
