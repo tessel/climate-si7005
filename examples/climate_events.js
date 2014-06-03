@@ -7,9 +7,9 @@ climate module emits events for temperature.
 *********************************************/
 
 var tessel = require('tessel');
+var climatelib = require('../');
 
-console.log('Starting up si7005... on port bank A');
-var climate = require('../').use(tessel.port['A']);
+var climate = climatelib.use(tessel.port['A']);
 
 // Emitted once readTemp gets data, allows other functions to listen for climate data
 climate.on('temperature', function () {

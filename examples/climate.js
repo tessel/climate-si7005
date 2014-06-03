@@ -1,12 +1,16 @@
+// Any copyright is dedicated to the Public Domain.
+// http://creativecommons.org/publicdomain/zero/1.0/
+
 /*********************************************
 This basic climate example logs a stream
 of temperature and humidity to the console.
 *********************************************/
 
 var tessel = require('tessel');
+var climatelib = require('../');
 
-console.log('Starting up si7005... on port bank A');
-var climate = require('../').use(tessel.port['A']);
+var climate = climatelib.use(tessel.port['A']);
+
 
 climate.on('ready', function () {
   console.log('Connected to si7005');
