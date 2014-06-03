@@ -219,9 +219,7 @@ ClimateSensor.prototype.readTemperature = function (/*optional*/ type, next) {
         temp = temp * (9/5) + 32;
       }
 
-      var temp_type = temp + type; // Sets up an event argument that will log temp and type
-
-      self.emit('temperature', temp_type);
+      self.emit('temperature', temp, type);
 
       next(null, temp);
     })
