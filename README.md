@@ -26,21 +26,21 @@ climate.on('ready', function () {
 
 ## Methods
 
-*  **`climate`.use(interface[, csn])**
+##### *  **`climate`.use(interface[, csn])**
 Takes in the port bank that the module is connected to. Returns the Climate object.
 
-*  **`climate`.readTemperature([format,] callback(err, temp))**
+##### *  **`climate`.readTemperature([format,] callback(err, temp))**
 Returns the temperature in degrees Celcius or Fahrenheit.
 
-*  **`climate`.readHumidity(callback(err, humidity))** Returns the relative humidity.
+##### *  **`climate`.readHumidity(callback(err, humidity))** Returns the relative humidity.
 
-*  **`climate`.setHeater(bool[, callback(err)])** Sets the HEAT config register. 
+##### *  **`climate`.setHeater(bool[, callback(err)])** Sets the HEAT config register. 
 The heater evaporates off any moisture that may condense on the sensor in high humidty environments. Enabling the heater will inreases the accuracy of humidity measurements but will interfere with temperature measurement.
 According to section 5.1.4 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
 > Turning on the heater will reduce the tendency of the humidity sensor to accumulate an offset due to “memory” of sustained high humidity conditions. When the heater is enabled, the reading of the on-chip temperature sensor will be affected (increased).
 
 
-*  **`climate`.setFastMeasure(bool[, callback(err)])** Sets the FAST config register. According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
+##### *  **`climate`.setFastMeasure(bool[, callback(err)])** Sets the FAST config register. According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
 > Fast mode reduces the total power consumed during a conversion or the average power consumed by the Si7005 when making periodic conversions. It also reduces the resolution of the measurements.
 
     | Normal | Fast
