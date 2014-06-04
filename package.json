@@ -1,11 +1,15 @@
 {
   "name": "climate-si7005",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "The library for using the Climate si7005 module for Tessel. Get temperature and humidity.",
   "main": "index.js",
   "readmeFilename:": "README.md",
   "directories": {
     "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tessel/climate-si7005.git"
   },
   "scripts": {
     "test": "tinytap -e 'tessel run {} ${CLIMATE_PORT}' test/*.js"
