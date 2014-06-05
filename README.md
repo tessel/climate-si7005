@@ -91,3 +91,4 @@ humidity resolution | 12 bit | 11 bit
 * [Si7005 datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf)
 
 ### License
+MIT or Apache 2.0, at your option
