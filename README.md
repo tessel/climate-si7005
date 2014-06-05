@@ -3,7 +3,7 @@ Driver for the climate-si7005 Tessel climate module. The hardware documentation 
 
 A port of [@jjalling's Si7005-B-GM Arduino library]( https://github.com/jjalling/Arduino-Si7005 ) to JS.
 
-If you run into any issues you can ask for support on the [Relay Module Forums](http://forums.tessel.io/category/climate).
+If you run into any issues you can ask for support on the [Climate Module Forums](http://forums.tessel.io/category/climate).
 
 
 ### Hardware overview/setup
