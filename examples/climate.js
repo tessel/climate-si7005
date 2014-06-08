@@ -3,10 +3,11 @@ This basic climate example logs a stream
 of temperature and humidity to the console.
 *********************************************/
 
+console.log('Starting up si7005... on port bank A');
+var climatelib = require('climate-si7005');
 var tessel = require('tessel');
 
-console.log('Starting up si7005... on port bank A');
-var climate = require('../').use(tessel.port('A'));
+var climate = climatelib.use(tessel.port['A']);
 
 climate.on('ready', function () {
   console.log('Connected to si7005');

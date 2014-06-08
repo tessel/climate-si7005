@@ -16,7 +16,10 @@ npm install climate-si7005
 ```
 ##Example
 ```js
-var climate = require('climate-si7005').use(hardwareapi);
+var climatelib = require('climate-si7005');
+var tessel = require('tessel');
+
+var climate = climatelib.use(tessel.port['A']);
 climate.on('ready', function () {
   climate.readTemperature('f', function (err, temp) {
     console.log('Degrees:', temp.toFixed(4) + 'F');
