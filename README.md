@@ -75,11 +75,14 @@ temp resolution | 14 bit | 13 bit
 humidity resolution | 12 bit | 11 bit
 
 ### Events
-&#x20;<a href="#api-climate-on-ready-Emitted-when-upon-first-successful-communication-between-the-Tessel-and-the-module" name="api-climate-on-ready-Emitted-when-upon-first-successful-communication-between-the-Tessel-and-the-module">#</a> climate<b>.on</b> ( 'ready' ) Emitted when upon first successful communication between the Tessel and the module.  
+&#x20;<a href="#api-climate-on-ready-Emitted-when-upon-first-successful-communication-between-the-Tessel-and-the-module" name="api-climate-on-ready-Emitted-when-upon-first-successful-communication-between-the-Tessel-and-the-module">#</a> climate<b>.on</b> ( 'ready' )  
+Emitted when upon first successful communication between the Tessel and the module.  
 
-&#x20;<a href="#api-climate-on-temperature-callback-temp_type-Emitted-when-temperature-data-is-received-Internal-to-the-readTeperature-method-useful-when-another-module-is-triggered-by-climate-data" name="api-climate-on-temperature-callback-temp_type-Emitted-when-temperature-data-is-received-Internal-to-the-readTeperature-method-useful-when-another-module-is-triggered-by-climate-data">#</a> climate<b>.on</b> ( 'temperature'[,callback(temp_type)] ) Emitted when temperature data is received. Internal to the readTeperature method, useful when another module is triggered by climate data.  
+&#x20;<a href="#api-climate-on-temperature-callback-temp_type-Emitted-when-temperature-data-is-received-Internal-to-the-readTeperature-method-useful-when-another-module-is-triggered-by-climate-data" name="api-climate-on-temperature-callback-temp_type-Emitted-when-temperature-data-is-received-Internal-to-the-readTeperature-method-useful-when-another-module-is-triggered-by-climate-data">#</a> climate<b>.on</b> ( 'temperature'[,callback(temperature, temp_type)] )  
+Emitted when temperature data is received. Internal to the readTeperature method, useful when another module is triggered by climate data.  
 
-&#x20;<a href="#api-climate-on-humidity-callback-humidity-Emitted-when-humidity-data-is-received-Internal-to-the-readHumidity-method-useful-when-another-module-is-triggered-by-climate-data" name="api-climate-on-humidity-callback-humidity-Emitted-when-humidity-data-is-received-Internal-to-the-readHumidity-method-useful-when-another-module-is-triggered-by-climate-data">#</a> climate<b>.on</b> ( 'humidity'[,callback(humidity)] ) Emitted when humidity data is received. Internal to the readHumidity method, useful when another module is triggered by climate data.  
+&#x20;<a href="#api-climate-on-humidity-callback-humidity-Emitted-when-humidity-data-is-received-Internal-to-the-readHumidity-method-useful-when-another-module-is-triggered-by-climate-data" name="api-climate-on-humidity-callback-humidity-Emitted-when-humidity-data-is-received-Internal-to-the-readHumidity-method-useful-when-another-module-is-triggered-by-climate-data">#</a> climate<b>.on</b> ( 'humidity'[,callback(humidity)] )  
+Emitted when humidity data is received. Internal to the readHumidity method, useful when another module is triggered by climate data.  
 
 ###Further Examples  
 * [Climate Events]([Audio playback](link to example for this in the "examples" folder). This basic example demonstrates how the climate module emits events for temperature.
