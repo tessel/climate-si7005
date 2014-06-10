@@ -60,8 +60,7 @@ Returns the temperature in degrees Celcius or Fahrenheit.
 Returns the relative humidity.
 
 &#x20;<a href="#api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register" name="api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register">#</a> climate<b>.setHeater</b> ( bool[, callback(err)] )  
-Sets the HEAT config register.  
-The heater evaporates off any moisture that may condense on the sensor in high humidty environments. Enabling the heater will inreases the accuracy of humidity measurements but will interfere with temperature measurement.
+Sets the HEAT config register. The heater evaporates off any moisture that may condense on the sensor in high humidty environments. Enabling the heater will inreases the accuracy of humidity measurements but will interfere with temperature measurement.
 >According to section 5.1.4 of the [datasheet]( http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf )
 Turning on the heater will reduce the tendency of the humidity sensor to accumulate an offset due to “memory” of sustained high humidity conditions. When the heater is enabled, the reading of the on-chip temperature sensor will be affected (increased).
 
