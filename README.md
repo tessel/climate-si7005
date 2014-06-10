@@ -59,12 +59,14 @@ Returns the temperature in degrees Celcius or Fahrenheit.
 &#x20;<a href="#api-climate-readHumidity-callback-err-humidity" name="api-climate-readHumidity-callback-err-humidity">#</a> climate<b>.readHumidity</b> ( callback(err, humidity) )  
 Returns the relative humidity.
 
-&#x20;<a href="#api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register" name="api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register">#</a> climate<b>.setHeater</b> ( bool[, callback(err)] ) Sets the HEAT config register.  
+&#x20;<a href="#api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register" name="api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register">#</a> climate<b>.setHeater</b> ( bool[, callback(err)] )  
+Sets the HEAT config register.  
 The heater evaporates off any moisture that may condense on the sensor in high humidty environments. Enabling the heater will inreases the accuracy of humidity measurements but will interfere with temperature measurement.
 >According to section 5.1.4 of the [datasheet]( http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf )
 Turning on the heater will reduce the tendency of the humidity sensor to accumulate an offset due to “memory” of sustained high humidity conditions. When the heater is enabled, the reading of the on-chip temperature sensor will be affected (increased).
 
-&#x20;<a href="#api-climate-setFastMeasure-bool-callback-err-Sets-the-FAST-config-register" name="api-climate-setFastMeasure-bool-callback-err-Sets-the-FAST-config-register">#</a> climate<b>.setFastMeasure</b> ( bool[, callback(err)] ) Sets the FAST config register.   
+&#x20;<a href="#api-climate-setFastMeasure-bool-callback-err-Sets-the-FAST-config-register" name="api-climate-setFastMeasure-bool-callback-err-Sets-the-FAST-config-register">#</a> climate<b>.setFastMeasure</b> ( bool[, callback(err)] )  
+Sets the FAST config register.   
 >According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf )
 	Fast mode reduces the total power consumed during a conversion or the average power consumed by the Si7005 when making periodic conversions. It also reduces the resolution of the measurements.
 
