@@ -87,7 +87,7 @@ Emitted when humidity data is received. Internal to the readHumidity method, use
 
 ###Further Examples  
 * [Climate Events](https://github.com/tessel/climate-si7005/blob/master/examples/climate_events.js). This basic example demonstrates how the climate module emits events for temperature.
-* [Climate Heater](https://github.com/tessel/climate-si7005/blob/master/examples/climate_heat.js). Description of what this example does. 
+* [Climate Heater](https://github.com/tessel/climate-si7005/blob/master/examples/climate_heat.js). This example demonstates the climate module's built in heater and how it effects temperature and humidity readings. 
 
 ### References
 * [Arduino-Si7005](https://github.com/jjalling/Arduino-Si7005)
