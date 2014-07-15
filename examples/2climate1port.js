@@ -63,12 +63,9 @@ setImmediate(function swap () {
       climate.readTemperature('f', function (err, temp) {
         climate.readHumidity(function (err, humid) {
           console.log('Degrees:', temp.toFixed(4) + 'F', 'Humidity:', humid.toFixed(4) + '%RH');
+          swap();
         });
       });
     });
-  }, 300);
-  
-  setTimeout(function() {
-    swap();
   }, 1000);
 });
