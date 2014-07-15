@@ -46,6 +46,7 @@ var port = tessel.port['A'];
 
 // Because the climate module is so low power, we can run it off a GPIO
 var state = false;
+// ...But we need to multiplex them if we want to share the I2C bus
 var one = port.digital[1].output(state);
 var two = port.digital[2].output(!state);
 
