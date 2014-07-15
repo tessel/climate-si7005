@@ -23,6 +23,18 @@ pins on Tessel (solder bridged in our case):
 
 Connect G2/RX on Tessel to one module's 3.3V pin
 Connect G3 on Tessel to the other module's 3.3V pin
+
+Note:
+The si7005 climate modules require that their G1/TX 
+pin be tied low in order for them to function. As
+such, connecting the G1/TX pin on the modules directly
+to GND (instead of connecting them to the G1/TX pin
+of the Tessel) frees up the G1/TX pin on the Tessel
+so that yet another module can be controlled.
+
+The si7020 variant does not have this requirement, so
+G1/TX needn't be connected, freeing up the pin by
+default.
 ******************************************************/
 
 var tessel = require('tessel');
