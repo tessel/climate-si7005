@@ -243,7 +243,7 @@ ClimateSensor.prototype.setHeater = function (status) {
   } else {
     if (this._configReg)
     {
-      this._configReg ^= CONFIG_HEAT;
+      this._configReg &= ~CONFIG_HEAT;
     }
   }
 };
@@ -261,7 +261,7 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
     this._configReg |= CONFIG_FAST;
   } else {
     if (this._configReg) {
-      this._configReg ^= CONFIG_FAST;
+      this._configReg &= ~CONFIG_FAST;
     }
   }
 };
