@@ -9,12 +9,12 @@ function completionChecker (required, test) {
   this.required = required;
   this.completed = 0;
   this.test = test;
-  
-  this.check = function () {
-    this.completed++;
-    if (this.completed === this.required) {
-      this.test.end();
-    }
+}
+
+completionChecker.prototype.check = function () {
+  this.completed++;
+  if (this.completed === this.required) {
+    this.test.end();
   }
 }
 
