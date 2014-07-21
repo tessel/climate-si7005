@@ -147,7 +147,6 @@ test('readHumidity', function (t) {
   var rhl;
   climate.on('humidity', rhl = function () {
     clearTimeout(rhf);
-    console.log('hum');
     climate.removeListener('humidity', rhl);
     t.ok(true, '\'humidity\' event fired');
     //  If we're last, end the test, otherwise, set the other guy to last
