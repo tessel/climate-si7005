@@ -7,32 +7,38 @@ var TIMEOUT = 10000;
 
 console.log('intialized everything');
 
-var startTime;
-var requireTime;
-test('\'ready\' event', function (t) {
+test('Reasonable boot time and \'ready\' event', function (t) {
+  //  Don't end the test until the last part is done. There is 1 required event.
+  var eventsCompleted = 0;
+  var eventsRequired = 1;
+
   //  Connect to the module in a reasonable amount of time
-  startTime = new Date();
+  var startTime = new Date();
   climate = climatelib.use(tessel.port[port]);
-  requireTime = new Date();
+  var requireTime = new Date();
 
   var rl;
   climate.on('ready', rl = function () {
     clearTimeout(rlf);
     t.ok(true, 'Ready event fired');
-    t.end();
+    eventsCompleted++;
     climate.removeListener('ready', rl);
   });
 
   var rlf = setTimeout(function () {
     climate.removeListener('ready', rl);
     t.ok(false, '\'ready\' event never fired');
-    t.end();
   }, TIMEOUT);
-});
 
-test('Reasonable boot time', function (t) {
   t.ok(requireTime - startTime < 100, 'Module took longer than 100ms to boot');
-  t.end();
+
+ //  Wait for event to pass/fail
+  var complete = setInterval(function () {
+    if (eventsCompleted === eventsRequired) {
+      clearInterval(complete);
+      t.end();
+    }
+  }, 100);
 });
 
 /////////////////////////////      Functions     ///////////////////////////////
