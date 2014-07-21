@@ -70,17 +70,84 @@ test('readTemperature - Valid temperature reading, Farenheit', function (t) {
 });
 
 test('readTemperature - Farenheit and Celsius measurements agree', function (t) {
+  //  Don't end the test until the last part is done. There are 2 required events.
+  var eventsCompleted = 0;
+  var eventsRequired = 2;
+
+  //  Celsius temperature event listener setup
+  var rtcl = climate.on('temperature', function (err, temp, type) {
+    if (type !== 'f') {
+      clearTimeout(rtcf);
+      climate.removeListener('ready', rtcl);
+      t.ok(true, '\'temperature\' event for Celsius fired');
+      eventsCompleted++;
+    } 
+  });
+
+  //  Celsius temperature event failure to fire
+  var rtcf = setTimeout(function () {
+    climate.removeListener('temperature', rtcl);
+    t.ok(false, '\'temperature\' event for Celsius never fired');
+    eventsCompleted++;
+  }, TIMEOUT);
+
+  //  Farenheit temperature event listener setup
+  var rtfl = climate.on('temperature', function (err, temp, type) {
+    if (type === 'f') {
+      clearTimeout(rtff);
+      climate.removeListener('ready', rtfl);
+      t.ok(true, '\'temperature\' event for Farenheit fired');
+      eventsCompleted++;
+    }
+  });
+
+  //  Farenheit temperature event failure to fire
+  var rtff = setTimeout(function () {
+    climate.removeListener('temperature', rtfl);
+    t.ok(false, '\'temperature\' event for Farenheit never fired');
+    eventsCompleted++;
+  }, TIMEOUT);
+
+  //  Read the temperatures
   climate.readTemperature(function (errC, tempC) {
     climate.readTemperature('f', function (errF, tempF) {
       //  Sanity check
       t.ok(!errC && !errF, 'Error reading temperatures, which is odd because they passed last time...');
       t.ok(Math.abs((tempF - 32) * (5.0/9.0) - tempC) < 0.5, 'Temperature mismatch by more than 0.5 degrees C in consecutive reads with unit conversion');
-      t.end();
     });
   });
+
+  //  Wait for event to pass/fail
+  var complete = setInterval(function () {
+    if (eventsCompleted === eventsRequired) {
+      clearInterval(complete);
+      t.end();
+    }
+  }, 100);
 });
 
 test('readHumidity', function (t) {
+  //  Don't end the test until the last part is done. There is 1 required event.
+  var eventsCompleted = 0;
+  var eventsRequired = 1;
+
+  //  Event listener setup
+  var rhl = climate.on('humidity', function () {
+    clearTimeout(rhf);
+    climate.removeListener('ready', rhl);
+    t.ok(true, '\'humidity\' event fired');
+    //  If we're last, end the test, otherwise, set the other guy to last
+    eventsCompleted++;
+  });
+
+  //  Humidity event failure to fire
+  var rhf = setTimeout(function () {
+    climate.removeListener('humidity', rhl);
+    t.ok(false, '\'humidity\' event never fired');
+    eventsCompleted++;
+  }, TIMEOUT);
+
+  //  Actually read the humidity
   climate.readHumidity(function (err, hum) {
     //  Make sure there was no error reading the humidity
     t.ok(!err, 'Error reading humidity');
@@ -88,8 +155,15 @@ test('readHumidity', function (t) {
     //  Check the humidity value
     t.equal(typeof hum, 'number', 'Returned humidity was not a number');
     t.ok(hum >= 0 && hum <= 100, 'Returned humidity value does not make sense physically');
-    t.end();
   });
+
+  //  Wait for event to pass/fail
+  var complete = setInterval(function () {
+    if (eventsCompleted === eventsRequired) {
+      clearInterval(complete);
+      t.end();
+    }
+  }, 100);
 });
 
 test('setHeater', function (t) {
