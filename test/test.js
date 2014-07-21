@@ -44,35 +44,9 @@ test('getData', function (t) {
 });
 
 test('readTemperature - Valid temperature reading, Celsius', function (t) {
-  climate.readTemperature(function (err, temp) {
-    //  Make sure there was no error reading the temperature
-    t.ok(!err, 'Error reading temperature in Celsius');
-
-    //  Does the temperature reading make sense?
-    t.equal(typeof temp, 'number', 'Returned temperature in Celsius was not a number');
-    t.ok(temp > -100 && temp < 200, 'Returned temperature in Celsius does not make sense physically');
-
-    t.end();
-  });
-});
-
-test('readTemperature - Valid temperature reading, Farenheit', function (t) {
-  climate.readTemperature('f', function (err, temp) {
-    //  Make sure there was no error reading the temperature
-    t.ok(!err, 'Error reading temperature in Farenheit');
-
-    //  Does the temperature reading make sense?
-    t.equal(typeof temp, 'number', 'Returned temperature in Farenheit was not a number');
-    t.ok(temp > -100 && temp < 200, 'Returned temperature in Farenheit does not make sense physically');
-
-    t.end();
-  });
-});
-
-test('readTemperature - Farenheit and Celsius measurements agree', function (t) {
-  //  Don't end the test until the last part is done. There are 2 required events.
+  //  Don't end the test until the last part is done. There is 1 required event.
   var eventsCompleted = 0;
-  var eventsRequired = 2;
+  var eventsRequired = 1;
 
   //  Celsius temperature event listener setup
   var rtcl = climate.on('temperature', function (err, temp, type) {
@@ -91,8 +65,31 @@ test('readTemperature - Farenheit and Celsius measurements agree', function (t) 
     eventsCompleted++;
   }, TIMEOUT);
 
+  climate.readTemperature(function (err, temp) {
+    //  Make sure there was no error reading the temperature
+    t.ok(!err, 'Error reading temperature in Celsius');
+
+    //  Does the temperature reading make sense?
+    t.equal(typeof temp, 'number', 'Returned temperature in Celsius was not a number');
+    t.ok(temp > -100 && temp < 200, 'Returned temperature in Celsius does not make sense physically');
+  });
+
+  //  Wait for event to pass/fail
+  var complete = setInterval(function () {
+    if (eventsCompleted === eventsRequired) {
+      clearInterval(complete);
+      t.end();
+    }
+  }, 100);
+});
+
+test('readTemperature - Valid temperature reading, Farenheit', function (t) {
+  //  Don't end the test until the last part is done. There is 1 required event.
+  var eventsCompleted = 0;
+  var eventsRequired = 1;
+
   //  Farenheit temperature event listener setup
-  var rtfl = climate.on('temperature', function (err, temp, type) {
+  var rtfl = climate.on('temperature', function (temp, type) {
     if (type === 'f') {
       clearTimeout(rtff);
       climate.removeListener('ready', rtfl);
@@ -108,13 +105,13 @@ test('readTemperature - Farenheit and Celsius measurements agree', function (t) 
     eventsCompleted++;
   }, TIMEOUT);
 
-  //  Read the temperatures
-  climate.readTemperature(function (errC, tempC) {
-    climate.readTemperature('f', function (errF, tempF) {
-      //  Sanity check
-      t.ok(!errC && !errF, 'Error reading temperatures, which is odd because they passed last time...');
-      t.ok(Math.abs((tempF - 32) * (5.0/9.0) - tempC) < 0.5, 'Temperature mismatch by more than 0.5 degrees C in consecutive reads with unit conversion');
-    });
+  climate.readTemperature('f', function (err, temp) {
+    //  Make sure there was no error reading the temperature
+    t.ok(!err, 'Error reading temperature in Farenheit');
+
+    //  Does the temperature reading make sense?
+    t.equal(typeof temp, 'number', 'Returned temperature in Farenheit was not a number');
+    t.ok(temp > -100 && temp < 200, 'Returned temperature in Farenheit does not make sense physically');
   });
 
   //  Wait for event to pass/fail
@@ -124,6 +121,18 @@ test('readTemperature - Farenheit and Celsius measurements agree', function (t) 
       t.end();
     }
   }, 100);
+});
+
+test('readTemperature - consistent Farenheit and Celsius measurements and events', function (t) {
+  //  Read the temperatures
+  climate.readTemperature(function (errC, tempC) {
+    climate.readTemperature('f', function (errF, tempF) {
+      //  Sanity check
+      t.ok(!errC && !errF, 'Error reading temperatures, which is odd because they passed last time...');
+      t.ok(Math.abs((tempF - 32) * (5.0/9.0) - tempC) < 0.5, 'Temperature mismatch by more than 0.5 degrees C in consecutive reads with unit conversion');
+      t.end();
+    });
+  });
 });
 
 test('readHumidity', function (t) {
@@ -154,7 +163,7 @@ test('readHumidity', function (t) {
 
     //  Check the humidity value
     t.equal(typeof hum, 'number', 'Returned humidity was not a number');
-    t.ok(hum >= 0 && hum <= 100, 'Returned humidity value does not make sense physically');
+    t.ok(hum >= -50 && hum <= 150, 'Returned humidity value does not make sense physically');
   });
 
   //  Wait for event to pass/fail
