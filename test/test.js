@@ -13,7 +13,8 @@ test('\'ready\' event', function (t) {
   climate = climatelib.use(tessel.port[port]);
   var requireTime = new Date();
 
-  var rl = climate.on('ready', function () {
+  var rl;
+  climate.on('ready', rl = function () {
     clearTimeout(rlf);
     t.ok(true, 'Ready event fired');
     t.end();
@@ -49,10 +50,11 @@ test('readTemperature - Valid temperature reading, Celsius', function (t) {
   var eventsRequired = 1;
 
   //  Celsius temperature event listener setup
-  var rtcl = climate.on('temperature', function (temp, type) {
+  var rtcl;
+  climate.on('temperature', rtcl = function (temp, type) {
     if (type !== 'f') {
       clearTimeout(rtcf);
-      climate.removeListener('ready', rtcl);
+      climate.removeListener('temperature', rtcl);
       t.ok(true, '\'temperature\' event for Celsius fired');
       eventsCompleted++;
     } 
@@ -89,10 +91,11 @@ test('readTemperature - Valid temperature reading, Farenheit', function (t) {
   var eventsRequired = 1;
 
   //  Farenheit temperature event listener setup
-  var rtfl = climate.on('temperature', function (temp, type) {
+  var rtfl;
+  climate.on('temperature', rtfl = function (temp, type) {
     if (type === 'f') {
       clearTimeout(rtff);
-      climate.removeListener('ready', rtfl);
+      climate.removeListener('temperature', rtfl);
       t.ok(true, '\'temperature\' event for Farenheit fired');
       eventsCompleted++;
     }
@@ -141,9 +144,11 @@ test('readHumidity', function (t) {
   var eventsRequired = 1;
 
   //  Event listener setup
-  var rhl = climate.on('humidity', function () {
+  var rhl;
+  climate.on('humidity', rhl = function () {
     clearTimeout(rhf);
-    climate.removeListener('ready', rhl);
+    console.log('hum');
+    climate.removeListener('humidity', rhl);
     t.ok(true, '\'humidity\' event fired');
     //  If we're last, end the test, otherwise, set the other guy to last
     eventsCompleted++;
