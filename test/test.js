@@ -5,23 +5,35 @@ var climatelib = require('/..');
 var climate = null;
 var TIMEOUT = 10000;
 
-console.log('intialized everything');
+function completionChecker (required, test) {
+  this.required = required;
+  this.completed = 0;
+  this.test = test;
+  
+  this.check = function () {
+    this.completed++;
+    if (this.completed === this.required) {
+      this.test.end();
+    }
+  }
+}
 
 test('Reasonable boot time and \'ready\' event', function (t) {
   //  Don't end the test until the last part is done. There is 1 required event.
-  var eventsCompleted = 0;
-  var eventsRequired = 1;
+  var checker = new completionChecker(1, t);
 
   //  Connect to the module in a reasonable amount of time
   var startTime = new Date();
   climate = climatelib.use(tessel.port[port]);
   var requireTime = new Date();
 
+  t.ok(requireTime - startTime < 100, 'Module took longer than 100ms to boot');
+
   var rl;
   climate.on('ready', rl = function () {
     clearTimeout(rlf);
     t.ok(true, 'Ready event fired');
-    eventsCompleted++;
+    checker.check();
     climate.removeListener('ready', rl);
   });
 
@@ -29,16 +41,6 @@ test('Reasonable boot time and \'ready\' event', function (t) {
     climate.removeListener('ready', rl);
     t.ok(false, '\'ready\' event never fired');
   }, TIMEOUT);
-
-  t.ok(requireTime - startTime < 100, 'Module took longer than 100ms to boot');
-
- //  Wait for event to pass/fail
-  var complete = setInterval(function () {
-    if (eventsCompleted === eventsRequired) {
-      clearInterval(complete);
-      t.end();
-    }
-  }, 100);
 });
 
 /////////////////////////////      Functions     ///////////////////////////////
@@ -54,8 +56,7 @@ test('getData', function (t) {
 
 test('readTemperature - Valid temperature reading, Celsius', function (t) {
   //  Don't end the test until the last part is done. There is 1 required event.
-  var eventsCompleted = 0;
-  var eventsRequired = 1;
+  var checker = new completionChecker(1, t);
 
   //  Celsius temperature event listener setup
   var rtcl;
@@ -64,7 +65,7 @@ test('readTemperature - Valid temperature reading, Celsius', function (t) {
       clearTimeout(rtcf);
       climate.removeListener('temperature', rtcl);
       t.ok(true, '\'temperature\' event for Celsius fired');
-      eventsCompleted++;
+      checker.check();
     } 
   });
 
@@ -72,7 +73,7 @@ test('readTemperature - Valid temperature reading, Celsius', function (t) {
   var rtcf = setTimeout(function () {
     climate.removeListener('temperature', rtcl);
     t.ok(false, '\'temperature\' event for Celsius never fired');
-    eventsCompleted++;
+    checker.check();
   }, TIMEOUT);
 
   climate.readTemperature(function (err, temp) {
@@ -83,20 +84,11 @@ test('readTemperature - Valid temperature reading, Celsius', function (t) {
     t.equal(typeof temp, 'number', 'Returned temperature in Celsius was not a number');
     t.ok(temp > -100 && temp < 200, 'Returned temperature in Celsius does not make sense physically');
   });
-
-  //  Wait for event to pass/fail
-  var complete = setInterval(function () {
-    if (eventsCompleted === eventsRequired) {
-      clearInterval(complete);
-      t.end();
-    }
-  }, 100);
 });
 
 test('readTemperature - Valid temperature reading, Farenheit', function (t) {
   //  Don't end the test until the last part is done. There is 1 required event.
-  var eventsCompleted = 0;
-  var eventsRequired = 1;
+  var checker = new completionChecker(1, t);
 
   //  Farenheit temperature event listener setup
   var rtfl;
@@ -105,7 +97,7 @@ test('readTemperature - Valid temperature reading, Farenheit', function (t) {
       clearTimeout(rtff);
       climate.removeListener('temperature', rtfl);
       t.ok(true, '\'temperature\' event for Farenheit fired');
-      eventsCompleted++;
+      checker.check();
     }
   });
 
@@ -113,7 +105,7 @@ test('readTemperature - Valid temperature reading, Farenheit', function (t) {
   var rtff = setTimeout(function () {
     climate.removeListener('temperature', rtfl);
     t.ok(false, '\'temperature\' event for Farenheit never fired');
-    eventsCompleted++;
+    checker.check();
   }, TIMEOUT);
 
   climate.readTemperature('f', function (err, temp) {
@@ -124,14 +116,6 @@ test('readTemperature - Valid temperature reading, Farenheit', function (t) {
     t.equal(typeof temp, 'number', 'Returned temperature in Farenheit was not a number');
     t.ok(temp > -100 && temp < 200, 'Returned temperature in Farenheit does not make sense physically');
   });
-
-  //  Wait for event to pass/fail
-  var complete = setInterval(function () {
-    if (eventsCompleted === eventsRequired) {
-      clearInterval(complete);
-      t.end();
-    }
-  }, 100);
 });
 
 test('readTemperature - consistent Farenheit and Celsius measurements and events', function (t) {
@@ -148,8 +132,7 @@ test('readTemperature - consistent Farenheit and Celsius measurements and events
 
 test('readHumidity', function (t) {
   //  Don't end the test until the last part is done. There is 1 required event.
-  var eventsCompleted = 0;
-  var eventsRequired = 1;
+  var checker = new completionChecker(1, t);
 
   //  Event listener setup
   var rhl;
@@ -157,15 +140,14 @@ test('readHumidity', function (t) {
     clearTimeout(rhf);
     climate.removeListener('humidity', rhl);
     t.ok(true, '\'humidity\' event fired');
-    //  If we're last, end the test, otherwise, set the other guy to last
-    eventsCompleted++;
+    checker.check();
   });
 
   //  Humidity event failure to fire
   var rhf = setTimeout(function () {
     climate.removeListener('humidity', rhl);
     t.ok(false, '\'humidity\' event never fired');
-    eventsCompleted++;
+    checker.check();
   }, TIMEOUT);
 
   //  Actually read the humidity
@@ -177,14 +159,6 @@ test('readHumidity', function (t) {
     t.equal(typeof hum, 'number', 'Returned humidity was not a number');
     t.ok(hum >= -50 && hum <= 150, 'Returned humidity value does not make sense physically');
   });
-
-  //  Wait for event to pass/fail
-  var complete = setInterval(function () {
-    if (eventsCompleted === eventsRequired) {
-      clearInterval(complete);
-      t.end();
-    }
-  }, 100);
 });
 
 test('setHeater', function (t) {
