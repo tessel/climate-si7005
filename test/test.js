@@ -7,11 +7,13 @@ var TIMEOUT = 10000;
 
 console.log('intialized everything');
 
+var startTime;
+var requireTime;
 test('\'ready\' event', function (t) {
   //  Connect to the module in a reasonable amount of time
-  var startTime = new Date();
+  startTime = new Date();
   climate = climatelib.use(tessel.port[port]);
-  var requireTime = new Date();
+  requireTime = new Date();
 
   var rl;
   climate.on('ready', rl = function () {
