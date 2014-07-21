@@ -49,7 +49,7 @@ test('readTemperature - Valid temperature reading, Celsius', function (t) {
   var eventsRequired = 1;
 
   //  Celsius temperature event listener setup
-  var rtcl = climate.on('temperature', function (err, temp, type) {
+  var rtcl = climate.on('temperature', function (temp, type) {
     if (type !== 'f') {
       clearTimeout(rtcf);
       climate.removeListener('ready', rtcl);
