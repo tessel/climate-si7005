@@ -101,7 +101,7 @@ util.inherits(ClimateSensor, events.EventEmitter);
 
 ClimateSensor.prototype._readRegister = function (addressToRead, next) {
   /**
-  Read from registers on the PCA9685 via I2C
+  Read from registers on the Si7005 via I2C
 
   Args
     addressToRead
@@ -118,7 +118,7 @@ ClimateSensor.prototype._readRegister = function (addressToRead, next) {
 
 ClimateSensor.prototype._writeRegister = function (addressToWrite, dataToWrite, next) {
   /**
-  Write to registers on the PCA9685 via I2C
+  Write to registers on the Si7005 via I2C
 
   Args
     addressToWrite
@@ -243,7 +243,7 @@ ClimateSensor.prototype.setHeater = function (status) {
   } else {
     if (this._configReg)
     {
-      this._configReg ^= CONFIG_HEAT;
+      this._configReg &= ~CONFIG_HEAT;
     }
   }
 };
@@ -261,7 +261,7 @@ ClimateSensor.prototype.setFastMeasure = function  (status) {
     this._configReg |= CONFIG_FAST;
   } else {
     if (this._configReg) {
-      this._configReg ^= CONFIG_FAST;
+      this._configReg &= ~CONFIG_FAST;
     }
   }
 };
