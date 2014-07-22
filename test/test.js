@@ -1,9 +1,12 @@
 var tessel = require('tessel');
 var test = require('ttt');
-var port = process.argv[2] || 'A';
 var climatelib = require('/..');
+
+var port = process.argv[2] || 'A';
 var climate = null;
 var TIMEOUT = 10000;
+
+console.log('1..31');
 
 function completionChecker (required, test) {
   this.required = required;
