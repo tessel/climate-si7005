@@ -16,13 +16,14 @@
   },
   "dependencies": {
     "prom": "~0.0.3"
-    },
+  },
   "hardware": {
     "./examples": false
   },
   "author": "team@technical.io",
   "license": "MIT/Apache 2.0",
   "devDependencies": {
-    "tinytap": "~0.0.2"
+    "tinytap": "^0.1.0",
+    "ttt": "^1.0.3"
   }
 }
