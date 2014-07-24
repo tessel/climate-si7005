@@ -14,16 +14,15 @@
   "scripts": {
     "test": "tinytap -e 'tessel run {} ${CLIMATE_PORT}' test/*.js"
   },
-  "dependencies": {
-    "prom": "~0.0.3"
-  },
   "hardware": {
     "./examples": false
   },
   "author": "team@technical.io",
   "license": "MIT/Apache 2.0",
+  "dependencies": {
+    "prom": "~0.0.3"
+  },
   "devDependencies": {
-    "tinytap": "^0.1.0",
-    "ttt": "^1.0.3"
+    "tinytap": "^0.2.0"
   }
 }
