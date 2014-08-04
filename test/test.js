@@ -1,6 +1,6 @@
 var tessel = require('tessel');
 var test = require('tinytap');
-var climatelib = require('/..');
+var climatelib = require('../');
 
 var port = process.argv[2] || 'A';
 var climate = null;
