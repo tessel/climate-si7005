@@ -11,10 +11,16 @@ The module may come with a protective white cover over the sensor, as shown in t
 
 ![Climate module with protective cover still in place]( https://s3.amazonaws.com/technicalmachine-assets/doc+pictures/protective-cover.jpg )
 
+There are multiple versions of this module. In the picture above, you can see that it says "climate-si7005", but yours may say something different, like "climate-si7020". In that case, you need to use "climate-si7020" in places where these docs say "climate-si7005".
+
 ### Installation
 ```sh
 
 npm install climate-si7005
+
+# If your module says `climate-si7020` on it, `npm install` that instead:
+# npm install climate-si7020
+
 ```
 
 ### Example
@@ -25,6 +31,8 @@ of temperature and humidity to the console.
 *********************************************/
 
 var tessel = require('tessel');
+
+// !!! Change this to require('climate-si7020') if that's what's written on your module.
 var climatelib = require('climate-si7005');
 
 var climate = climatelib.use(tessel.port['A']);
