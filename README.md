@@ -5,6 +5,7 @@ A port of [@jjalling's Si7005-B-GM Arduino library]( https://github.com/jjalling
 
 If you run into any issues you can ask for support on the [Climate Module Forums](http://forums.tessel.io/category/climate).
 
+
 ### Hardware overview/setup
 The module may come with a protective white cover over the sensor, as shown in the image below. This cover is permeable and does *not* need to be removed before use. If the protective cover is removed, avoid touching, poking, or dirtying the exposed silicon die.
 
