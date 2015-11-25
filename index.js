@@ -159,7 +159,7 @@ ClimateSensor.prototype.getData = function (configValue, next) {
             self._readRegister(DATAh, function (err, datah) {
               self._readRegister(DATAl, function (err, datal) {
 
-                self.hardware.digitalWrite(self.csn, 1);
+                self.hardware.digital[self.csn].write(1);
                 next(null, datal | datah << 8);
               });
             });
