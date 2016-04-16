@@ -30,7 +30,7 @@ climate.on('ready', function () {
 	climate.readTemperature('f', function initial_temp (err, temp) {
 		init_temp = temp;
 		current_temp = temp;
-		console.log('Your inital temperature is:', temp);
+		console.log('Your initial temperature is:', temp);
 	})
 
 	// Wait for the humidity module to get an accurate first reading.
@@ -39,7 +39,7 @@ climate.on('ready', function () {
 	climate.readHumidity(function initial_humid (err, humid) {
 		init_humid = humid;
 		current_humid = humid;
-		console.log('Your inital humidity is:', humid);
+		console.log('Your initial humidity is:', humid);
 	});
 
 	// Turn on heater
