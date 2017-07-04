@@ -63,22 +63,22 @@ setInterval(function(){}, 20000);
 
 ### Methods
 
-* &#x20;<a href="#api-climate-use-interface-csn-Takes-in-the-port-bank-that-the-module-is-connected-to-Returns-the-Climate-object" name="api-climate-use-interface-csn-Takes-in-the-port-bank-that-the-module-is-connected-to-Returns-the-Climate-object"></a> climate<b>.use</b> ( interface[, csn] ) Takes in the port bank that the module is connected to. Returns the Climate object.  
+&#x20;<a href="#api-climate-use-interface-csn-Takes-in-the-port-bank-that-the-module-is-connected-to-Returns-the-Climate-object" name="api-climate-use-interface-csn-Takes-in-the-port-bank-that-the-module-is-connected-to-Returns-the-Climate-object">#</a> climate<b>.use</b> ( interface[, csn] ) Takes in the port bank that the module is connected to. Returns the Climate object.  
 
-* &#x20;<a href="#api-climate-readTemperature-format-callback-err-temp" name="api-climate-readTemperature-format-callback-err-temp"></a> climate<b>.readTemperature</b> ( [format,] callback(err, temp) )  
+&#x20;<a href="#api-climate-readTemperature-format-callback-err-temp" name="api-climate-readTemperature-format-callback-err-temp">#</a> climate<b>.readTemperature</b> ( [format,] callback(err, temp) )  
 Returns the temperature in degrees Celcius or Fahrenheit.
 
-* &#x20;<a href="#api-climate-readHumidity-callback-err-humidity" name="api-climate-readHumidity-callback-err-humidity"></a> climate<b>.readHumidity</b> ( callback(err, humidity) )  
+&#x20;<a href="#api-climate-readHumidity-callback-err-humidity" name="api-climate-readHumidity-callback-err-humidity">#</a> climate<b>.readHumidity</b> ( callback(err, humidity) )  
 Returns the relative humidity.
 
-* &#x20;<a href="#api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register" name="api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register"></a> climate<b>.setHeater</b> ( bool[, callback(err)] )  
+&#x20;<a href="#api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register" name="api-climate-setHeater-bool-callback-err-Sets-the-HEAT-config-register">#</a> climate<b>.setHeater</b> ( bool[, callback(err)] )  
 
 Sets the HEAT config register. The heater evaporates any moisture that may have condensed on the sensor in high humidty environments. Enabling the heater will increase the accuracy of humidity measurements but will interfere with temperature measurement.
 
 >According to section 5.1.4 of the [datasheet]( http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf )
 Turning on the heater will reduce the tendency of the humidity sensor to accumulate an offset due to “memory” of sustained high humidity conditions. When the heater is enabled, the reading of the on-chip temperature sensor will be affected (increased).
 
-* &#x20;<a href="#api-climate-setFastMeasure-bool-callback-err-Sets-the-FAST-config-register" name="api-climate-setFastMeasure-bool-callback-err-Sets-the-FAST-config-register"></a> climate<b>.setFastMeasure</b> ( bool[, callback(err)] )  
+&#x20;<a href="#api-climate-setFastMeasure-bool-callback-err-Sets-the-FAST-config-register" name="api-climate-setFastMeasure-bool-callback-err-Sets-the-FAST-config-register">#</a> climate<b>.setFastMeasure</b> ( bool[, callback(err)] )  
 Sets the FAST config register.   
 >According to section 5.1.3 of the [datasheet](http://www.silabs.com/Support%20Documents/TechnicalDocs/Si7005.pdf )
 	Fast mode reduces the total power consumed during a conversion or the average power consumed by the Si7005 when making periodic conversions. It also reduces the resolution of the measurements.
@@ -90,13 +90,13 @@ temp resolution | 14 bit | 13 bit
 humidity resolution | 12 bit | 11 bit
 
 ### Events
-* &#x20;<a href="#api-climate-on-ready-Emitted-when-upon-first-successful-communication-between-the-Tessel-and-the-module" name="api-climate-on-ready-Emitted-when-upon-first-successful-communication-between-the-Tessel-and-the-module"></a> climate<b>.on</b> ( 'ready' )  
+&#x20;<a href="#api-climate-on-ready-Emitted-when-upon-first-successful-communication-between-the-Tessel-and-the-module" name="api-climate-on-ready-Emitted-when-upon-first-successful-communication-between-the-Tessel-and-the-module">#</a> climate<b>.on</b> ( 'ready' )  
 Emitted when upon first successful communication between the Tessel and the module.  
 
-* &#x20;<a href="#api-climate-on-temperature-callback-temp_type-Emitted-when-temperature-data-is-received-Internal-to-the-readTeperature-method-useful-when-another-module-is-triggered-by-climate-data" name="api-climate-on-temperature-callback-temp_type-Emitted-when-temperature-data-is-received-Internal-to-the-readTeperature-method-useful-when-another-module-is-triggered-by-climate-data"></a> climate<b>.on</b> ( 'temperature'[,callback(temperature, temp_type)] )  
+&#x20;<a href="#api-climate-on-temperature-callback-temp_type-Emitted-when-temperature-data-is-received-Internal-to-the-readTeperature-method-useful-when-another-module-is-triggered-by-climate-data" name="api-climate-on-temperature-callback-temp_type-Emitted-when-temperature-data-is-received-Internal-to-the-readTeperature-method-useful-when-another-module-is-triggered-by-climate-data">#</a> climate<b>.on</b> ( 'temperature'[,callback(temperature, temp_type)] )  
 Emitted when temperature data is received. Internal to the readTemperature method, useful when another module is triggered by climate data.  
 
-* &#x20;<a href="#api-climate-on-humidity-callback-humidity-Emitted-when-humidity-data-is-received-Internal-to-the-readHumidity-method-useful-when-another-module-is-triggered-by-climate-data" name="api-climate-on-humidity-callback-humidity-Emitted-when-humidity-data-is-received-Internal-to-the-readHumidity-method-useful-when-another-module-is-triggered-by-climate-data"></a> climate<b>.on</b> ( 'humidity'[,callback(humidity)] )  
+&#x20;<a href="#api-climate-on-humidity-callback-humidity-Emitted-when-humidity-data-is-received-Internal-to-the-readHumidity-method-useful-when-another-module-is-triggered-by-climate-data" name="api-climate-on-humidity-callback-humidity-Emitted-when-humidity-data-is-received-Internal-to-the-readHumidity-method-useful-when-another-module-is-triggered-by-climate-data">#</a> climate<b>.on</b> ( 'humidity'[,callback(humidity)] )  
 Emitted when humidity data is received. Internal to the readHumidity method, useful when another module is triggered by climate data.  
 
 ###Further Examples  
