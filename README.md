@@ -1,6 +1,8 @@
 **[UNMAINTAINED] This library does not have a maintainer. The source code and repository will be kept at this URL indefinitely. If you'd like to help maintain this codebase, create an issue on this repo explaining why you'd like to become a maintainer and tag @tessel/maintainers in the body.**
 
 # Climate
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/tessel/climate-si7005.svg)](https://greenkeeper.io/)
 [![Code of Conduct](https://img.shields.io/badge/%E2%9D%A4-code%20of%20conduct-blue.svg?style=flat)](https://github.com/tessel/project/blob/master/CONDUCT.md)
 
 Driver for the climate-si7005 Tessel climate module. The hardware documentation for this module can be found [here](https://github.com/tessel/hardware/blob/master/modules-overview.md#climate).
