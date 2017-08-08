@@ -23,6 +23,6 @@
     "prom": "~0.0.3"
   },
   "devDependencies": {
-    "tinytap": "^0.2.0"
+    "tinytap": "^1.2.2"
   }
 }
